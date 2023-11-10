@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head::head}"></head>
-
+<head th:replace="fragments/head::head"></head>
 
 <body>
 
@@ -10,12 +9,128 @@
   Navbar
 </div>
 
+
+
+
 <div class="container">
-  <h2 class="text-center text-white">A page for all users</h2>
+  <div class="form-group col-md-6 mb-3">
+    <label class="text-center text-white font-weight-bold" for="category">Search by category</label>
+    <select id="category"
+            class="form-control">
+      <option value="">- Select category -</option>
+      <optgroup
+              th:each="categorie : ${categories}"
+              th:label="${categorie.getName()}">
+        <option
+                th:each="subCategory : ${categorie.getSubCategories()}"
+                th:text="${subCategory.getName()}"
+                th:value="${subCategory.getName()}"
+                th:selected="${subCategory.name}">Model
+        </option>
+      </optgroup>
+    </select>
+    <p class="invalid-feedback errors alert alert-danger">
+      Category is required.
+    </p>
+    <button> Search</button>
+  </div>
 </div>
 
-<div>
-  <footer></footer>
+<div class="container">
+<h1 class="text-center text-info">ALL LISTINGS</h1>
 </div>
+<div class="container">
+  <div id="productCards" class="row">
+    <!-- Product cards will be dynamically added here -->
+  </div>
+</div>
+
+<style>
+  /* Add a margin below each card */
+  .card {
+    margin-bottom: 20px;
+  }
+
+  /* Center the title */
+  .card-title {
+    text-align: center;
+  }
+</style>
+
+<script>
+  // Fetch product data from the server
+  fetch('http://localhost:8080/products')
+          .then(response => response.json())
+          .then(products => {
+            // Get the container element to append cards
+            const productContainer = document.getElementById('productCards');
+
+            // Iterate over each product and create a Bootstrap card
+            products.forEach(product => {
+              // Create card column
+              const cardColumn = document.createElement('div');
+              cardColumn.className = 'col-md-4';
+              cardColumn.style.marginBottom="30px"// Set the column width based on your needs
+
+              // Create card element with inline styling
+              const card = document.createElement('div');
+              card.className = 'card h-100'; // Set a fixed height for the card
+              card.style.width = '100%'; // Adjust the width as needed
+              card.style.marginBottom = '5rem';// Add margin for spacing between cards
+
+              // Create card image element
+              const cardImage = document.createElement('img');
+              cardImage.src = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROyKFTUV232vOaIuAM76gpwZK7IW5mZd6XSDTHRF0f7w&s"; // Replace 'imageUrl' with the actual property
+              cardImage.className = 'card-img-top';
+              cardImage.alt = 'Product Image';
+
+              // Create card body element with flex layout
+              const cardBody = document.createElement('div');
+              cardBody.className = 'card-body d-flex flex-column justify-content-between'; // Use justify-content-between to push the button to the bottom
+
+              // Create card title element
+              const cardTitle = document.createElement('h5');
+              cardTitle.className = 'card-title';
+              cardTitle.textContent = product.title; // Replace 'title' with the actual property
+
+              // Center the title
+              cardTitle.style.textAlign = 'center';
+
+              // Create card text element
+              const cardText = document.createElement('p');
+              cardText.className = 'card-text';
+              cardText.textContent = product.description; // Replace 'description' with the actual property
+
+              // Set a fixed height for the description element
+              cardText.style.maxHeight = '150px'; // Adjust the height as needed
+              cardText.style.overflow = 'hidden';
+              cardText.style.textOverflow = 'ellipsis';
+
+              // Create a button (you can customize this according to your needs)
+              const button = document.createElement('a');
+              button.href = '#';
+              button.className = 'btn btn-primary btn-sm'; // Adjust button styling and size
+              button.textContent = 'Go'; // Shortened text for visibility
+
+              // Append elements to card body
+              cardBody.appendChild(cardTitle);
+              cardBody.appendChild(cardImage);
+              cardBody.appendChild(cardText);
+              cardBody.appendChild(button);
+
+              // Append elements to card
+              card.appendChild(cardBody);
+
+              // Append card to column
+              cardColumn.appendChild(card);
+
+              // Append column to container
+              productContainer.appendChild(cardColumn);
+              productContainer.appendChild(document.createElement("br"))
+            });
+          })
+          .catch(error => console.error('Error fetching products:', error));
+</script>
+
 </body>
 </html>

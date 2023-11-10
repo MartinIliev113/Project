@@ -11,11 +11,63 @@
 </div>
 
 <div class="container">
-  <h2 class="text-center text-white">A page for admins</h2>
+  <h2 class="text-center text-white">Admins</h2>
 </div>
 
-<div>
-  <footer></footer>
+<div class="col-5 bg-dark rounded m-auto" style="height: 45vh; overflow: auto">
+  <div class="mt-3 rounded badge-warning d-flex flex-column" th:each="admin : ${admins}">
+    <div class="mb-2 text-center">
+      <span th:text="|Username: ${admin.getUsername()}|" style="display: inline-block;">username</span>
+    </div>
+    <div class="mb-2 text-center">
+      <span th:text="|${admin.getFirstName()} ${admin.getLastName()}|" style="display: inline-block;">Names:</span>
+    </div>
+    <div class="mb-2 d-flex justify-content-between">
+      <a class="text-primary" th:href="@{/admin/{username}(username=*{admin.getUsername()})}">Chane role</a>
+      <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
+    </div>
+  </div>
 </div>
+
+<div class="container">
+  <h2 class="text-center text-white">Moderators</h2>
+</div>
+
+<div class="col-5 bg-dark rounded m-auto" style="height: 45vh; overflow: auto">
+  <div class="mt-3 rounded badge-warning d-flex flex-column" th:each="moderator : ${moderators}">
+    <div class="mb-2 text-center">
+      <span th:text="|Username: ${moderator.getUsername()}|" style="display: inline-block;">username</span>
+    </div>
+    <div class="mb-2 text-center">
+      <span th:text="|${moderator.getFirstName()} ${moderator.getLastName()}|" style="display: inline-block;">Names:</span>
+    </div>
+
+      <a class="text-primary" th:href="@{/admin/{username}(username=*{moderator.getUsername()})}">Chane role</a>
+      <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
+    </div>
+
+  </div>
+</div>
+
+<div class="container">
+  <h2 class="text-center text-white">Users</h2>
+</div>
+<div class="col-5 bg-dark rounded m-auto" style="height: 45vh; overflow: auto">
+  <div class="mt-3 rounded badge-warning d-flex flex-column" th:each="user : ${users}">
+    <div class="mb-2 text-center">
+      <span th:text="|Username: ${user.getUsername()}|" style="display: inline-block;">username</span>
+    </div>
+    <div class="mb-2 text-center">
+      <span th:text="|${user.getFirstName()} ${user.getLastName()}|" style="display: inline-block;">Names:</span>
+    </div>
+    <div class="mb-2 d-flex justify-content-between">
+      <a class="text-primary" th:href="@{/admin/{username}(username=*{user.getUsername()})}">Chane role</a>
+      <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
+    </div>
+  </div>
+
+  <div>
+    <footer></footer>
+  </div>
 </body>
 </html>

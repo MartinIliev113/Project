@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 
 @FieldMatch(first ="password",second = "confirmPassword",message = "Passwords should match")
-public class UserRegistrationDTO {
+public class UserDTO {
 
   @Size(min = 3,max = 30)
   @UniqueUsername(message = "Username is taken")
@@ -25,13 +25,14 @@ public class UserRegistrationDTO {
   @Size(min = 3,max = 30)
   private String password;
   private String confirmPassword;
+  private UserRoleDto role;
 
 
   public String getUsername() {
     return username;
   }
 
-  public UserRegistrationDTO setUsername(String username) {
+  public UserDTO setUsername(String username) {
     this.username = username;
     return this;
   }
@@ -40,7 +41,7 @@ public class UserRegistrationDTO {
     return firstName;
   }
 
-  public UserRegistrationDTO setFirstName(String firstName) {
+  public UserDTO setFirstName(String firstName) {
     this.firstName = firstName;
     return this;
   }
@@ -49,7 +50,7 @@ public class UserRegistrationDTO {
     return lastName;
   }
 
-  public UserRegistrationDTO setLastName(String lastName) {
+  public UserDTO setLastName(String lastName) {
     this.lastName = lastName;
     return this;
   }
@@ -58,7 +59,7 @@ public class UserRegistrationDTO {
     return email;
   }
 
-  public UserRegistrationDTO setEmail(String email) {
+  public UserDTO setEmail(String email) {
     this.email = email;
     return this;
   }
@@ -67,7 +68,7 @@ public class UserRegistrationDTO {
     return password;
   }
 
-  public UserRegistrationDTO setPassword(String password) {
+  public UserDTO setPassword(String password) {
     this.password = password;
     return this;
   }
@@ -76,7 +77,7 @@ public class UserRegistrationDTO {
     return confirmPassword;
   }
 
-  public UserRegistrationDTO setConfirmPassword(String confirmPassword) {
+  public UserDTO setConfirmPassword(String confirmPassword) {
     this.confirmPassword = confirmPassword;
     return this;
   }

@@ -7,11 +7,12 @@ import jakarta.validation.constraints.Size;
 
 
 import java.math.BigDecimal;
-
+import java.util.List;
 
 
 public class ProductDTO {
 
+    private String title;
     @Positive
     private BigDecimal price;
 
@@ -21,6 +22,19 @@ public class ProductDTO {
     @Size(min = 3, max = 1000)
     private String description;
     private String ownerUsername;
+
+    private List<String> imageUrls;
+
+    // Getter and setter for imageUrls
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public ProductDTO setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
+        return this;
+    }
+
 
 
     public BigDecimal getPrice() {
@@ -38,6 +52,15 @@ public class ProductDTO {
 
     public ProductDTO setSubCategory(String subCategory) {
         this.subCategory = subCategory;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ProductDTO setTitle(String title) {
+        this.title = title;
         return this;
     }
 

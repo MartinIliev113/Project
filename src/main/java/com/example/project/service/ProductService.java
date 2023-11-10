@@ -12,6 +12,8 @@ import com.example.project.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
@@ -19,6 +21,7 @@ public class ProductService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final SubCategoryRepository subCategoryRepository;
+
 
     public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper, SubCategoryRepository subCategoryRepository) {
         this.productRepository = productRepository;
@@ -41,4 +44,11 @@ public class ProductService {
     }
 
 
+    public List<ProductDTO> getAllProducts() {
+        return productRepository.findAll().stream().map(productEntity -> modelMapper.map(productEntity,ProductDTO.class)).toList();
+    }
+
+    public ProductDTO getProductById(Long id) {
+        return modelMapper.map(productRepository.findById(id),ProductDTO.class);
+    }
 }

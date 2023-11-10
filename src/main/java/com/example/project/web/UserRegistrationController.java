@@ -1,7 +1,7 @@
 package com.example.project.web;
 
 
-import com.example.project.model.dtos.UserRegistrationDTO;
+import com.example.project.model.dtos.UserDTO;
 import com.example.project.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -18,8 +18,8 @@ public class UserRegistrationController {
     private final UserService userService;
 
     @ModelAttribute(name = "registrationDTO")
-    public UserRegistrationDTO initUserRegistrationDto(){
-        return new UserRegistrationDTO();
+    public UserDTO initUserRegistrationDto(){
+        return new UserDTO();
     }
 
     public UserRegistrationController(UserService userService) {
@@ -33,7 +33,7 @@ public class UserRegistrationController {
 
     @PostMapping("/users/register")
     public String registerNewUser(
-            @Valid UserRegistrationDTO registrationDTO,
+            @Valid UserDTO registrationDTO,
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
 

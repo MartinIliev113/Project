@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                     requestMatchers("/", "/users/login", "/users/register", "/users/login-error")
                     .permitAll().
                     requestMatchers("/categories/all").hasRole(UserRoleEnum.MODERATOR.name()).
-                    requestMatchers("/pages/admins").hasRole(UserRoleEnum.ADMIN.name()).
+                    requestMatchers("/admin").hasRole(UserRoleEnum.ADMIN.name()).
                     anyRequest().authenticated()
         )
         .formLogin(

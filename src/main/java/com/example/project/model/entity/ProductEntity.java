@@ -3,10 +3,26 @@ package com.example.project.model.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
 public class ProductEntity extends BaseEntity {
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImageEntity> images = new ArrayList<>();
+
+    // Getter and setter for images
+    public List<ImageEntity> getImages() {
+        return images;
+    }
+
+    public ProductEntity setImages(List<ImageEntity> images) {
+        this.images = images;
+        return this;
+    }
+    private String title;
     @Column(nullable = false)
     private BigDecimal price;
     @ManyToOne
@@ -19,6 +35,15 @@ public class ProductEntity extends BaseEntity {
 
     @ManyToOne
     private UserEntity owner;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ProductEntity setTitle(String title) {
+        this.title = title;
+        return this;
+    }
 
     public ProductEntity setPrice(BigDecimal price) {
         this.price = price;
