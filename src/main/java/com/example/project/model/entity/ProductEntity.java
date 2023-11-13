@@ -22,10 +22,6 @@ public class ProductEntity extends BaseEntity {
         return this;
     }
 
-    public ProductEntity setSubCategoryEntity(SubCategoryEntity subCategoryEntity) {
-        this.subCategoryEntity = subCategoryEntity;
-        return this;
-    }
 
     private String title;
     @Column(nullable = false)
@@ -33,7 +29,7 @@ public class ProductEntity extends BaseEntity {
     @ManyToOne
     private CategoryEntity category;
     @ManyToOne
-    private SubCategoryEntity subCategoryEntity;
+    private SubCategoryEntity subCategory;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -55,12 +51,12 @@ public class ProductEntity extends BaseEntity {
         return this;
     }
 
-    public SubCategoryEntity getSubCategoryEntity() {
-        return subCategoryEntity;
+    public SubCategoryEntity getSubCategory() {
+        return subCategory;
     }
 
-    public ProductEntity setSubCategory(SubCategoryEntity subCategoryEntity) {
-        this.subCategoryEntity = subCategoryEntity;
+    public ProductEntity setSubCategory(SubCategoryEntity subCategory) {
+        this.subCategory = subCategory;
         return this;
     }
 

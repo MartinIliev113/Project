@@ -1,15 +1,14 @@
 package com.example.project.model.dtos;
 
-import com.example.project.model.entity.UserEntity;
+
 import com.example.project.model.validation.FileValidation;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 
 import java.math.BigDecimal;
-import java.util.List;
+
 
 
 public class ProductDTO {
@@ -26,7 +25,7 @@ public class ProductDTO {
     private String ownerUsername;
 
 
-//    @FileValidation(contentTypes = {"image/png", "image/jpeg"},message = "Select an image")
+    @FileValidation(contentTypes = {"image/png", "image/jpeg"},message = "Select an image")
     private MultipartFile image;
 
     public MultipartFile getImage() {
@@ -35,6 +34,16 @@ public class ProductDTO {
 
     public ProductDTO setImage(MultipartFile image) {
         this.image = image;
+        return this;
+    }
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public ProductDTO setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
         return this;
     }
 

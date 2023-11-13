@@ -60,4 +60,10 @@ public class CategoryService {
         return subCategoryRepository.findAll().stream().map(subCategory ->
                 modelMapper.map(subCategory, SubCategoryDto.class)).toList();
     }
+
+    public boolean checkCategory(String category) {
+        //TODO
+        CategoryEntity categoryEntity = categoryRepository.findByName(category);
+        return categoryEntity != null;
+    }
 }

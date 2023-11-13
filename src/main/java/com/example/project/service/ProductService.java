@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -49,7 +50,7 @@ public class ProductService {
         category.getProducts().add(product);
         subCategory.getProducts().add(product);
 
-        String filePath = getFilePath(userDetails.getFullName(), product.getTitle(), productDTO.getImage());
+        String filePath = getFilePath(userDetails.getUsername(), product.getTitle(), productDTO.getImage());
         boolean isUploaded = uploadImage(productDTO.getImage(), filePath);
 
         if (isUploaded) {
@@ -83,7 +84,11 @@ public class ProductService {
 
 
     public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
+        return productRepository.findAll().stream().map(productEntity -> {
+            ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
+            productDTO.setImageUrl("images/"+productEntity.getImageUrl());
+            return productDTO;
+        }).toList();
     }
 
     public ProductDTO getProductById(Long id) {
@@ -104,5 +109,16 @@ public class ProductService {
     private String transformProductTitle(String productTitle) {
         return productTitle.toLowerCase()
                 .replaceAll("\\s+", "_");
+    }
+
+
+    public List<ProductDTO> getAllByCategory(String category) {
+        List<ProductEntity> productEntities = productRepository.findAllByCategory(categoryRepository.findByName(category));
+        return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
+    }
+
+    public List<ProductDTO> getAllBySubCategory(String subCategory) {
+        List<ProductEntity> productEntities = productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory));
+        return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
     }
 }

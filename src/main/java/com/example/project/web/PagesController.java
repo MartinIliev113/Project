@@ -7,12 +7,14 @@ import com.example.project.service.CategoryService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
 @Controller
+@CrossOrigin("*")
 public class PagesController {
 
   private final CategoryService categoryService;
@@ -36,10 +38,8 @@ public class PagesController {
     return "index";
   }
 
-  @GetMapping("/pages/all")
-  public String all() {
-    return "all";
-  }
+
+//  @GetMapping
 }
 //
 //  @GetMapping("/pages/admins")

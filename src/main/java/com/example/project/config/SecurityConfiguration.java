@@ -31,7 +31,7 @@ public class SecurityConfiguration {
                 authorizeHttpRequests.
                     requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                     .permitAll().
-                    requestMatchers("/", "/users/login", "/users/register", "/users/login-error")
+                    requestMatchers("/", "/users/login", "/users/register", "/users/login-error","/pages/all/","/products/")
                     .permitAll().
                     requestMatchers("/categories/all").hasRole(UserRoleEnum.MODERATOR.name()).
                     requestMatchers("/admin").hasRole(UserRoleEnum.ADMIN.name()).

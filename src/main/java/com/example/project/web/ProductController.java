@@ -3,7 +3,6 @@ package com.example.project.web;
 import com.example.project.model.AppUserDetails;
 import com.example.project.model.dtos.CategoryDTO;
 import com.example.project.model.dtos.ProductDTO;
-import com.example.project.model.dtos.SubCategoryDto;
 import com.example.project.service.CategoryService;
 import com.example.project.service.ProductService;
 import jakarta.validation.Valid;
@@ -52,16 +51,33 @@ public class ProductController {
         productService.addProduct(productDTO,userDetails);
         return "redirect:/products";
     }
+    @GetMapping("/all")
+    public String all() {
+        return "all";
+    }
 
-    @GetMapping
+    @GetMapping()
     @ResponseBody
     public List<ProductDTO> getAllProducts() {
+        productService.getAllProducts().forEach(productDTO -> System.out.println(productDTO.getImageUrl()));
         return productService.getAllProducts();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{category}")
     @ResponseBody
-    public ProductDTO getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
+    public  List<ProductDTO> getProductsByCategory(@PathVariable String category){
+        if(categoryService.checkCategory(category)){
+            return productService.getAllByCategory(category);
+        }
+        return productService.getAllBySubCategory(category);
     }
+
+
+
+
+//    @GetMapping("/{id}")
+//    @ResponseBody
+//    public ProductDTO getProductById(@PathVariable Long id) {
+//        return productService.getProductById(id);
+//    }
 }
