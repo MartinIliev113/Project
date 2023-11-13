@@ -11,11 +11,19 @@ import com.example.project.repository.SubCategoryRepository;
 import com.example.project.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductService {
+    private static final String BASE_IMAGES_PATH = "./src/main/resources/images/";
+
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
@@ -34,21 +42,67 @@ public class ProductService {
     public void addProduct(ProductDTO productDTO, AppUserDetails userDetails) {
         ProductEntity product = modelMapper.map(productDTO, ProductEntity.class);
         SubCategoryEntity subCategory = subCategoryRepository.findByName(productDTO.getSubCategory());
-        CategoryEntity category=categoryRepository.findBySubCategoriesContaining(subCategory);
+        CategoryEntity category = categoryRepository.findBySubCategoriesContaining(subCategory);
         product.setCategory(category);
         product.setSubCategory(subCategory);
         product.setOwner(userRepository.findById(userDetails.getId()).get());//TODO FIX
         category.getProducts().add(product);
         subCategory.getProducts().add(product);
+
+        String filePath = getFilePath(userDetails.getFullName(), product.getTitle(), productDTO.getImage());
+        boolean isUploaded = uploadImage(productDTO.getImage(), filePath);
+
+        if (isUploaded) {
+            product.setImageUrl(filePath);
+        }
+
+
         productRepository.save(product);
+    }
+
+    private boolean uploadImage(MultipartFile image, String filePath) {
+        try {
+            File newFile = new File(BASE_IMAGES_PATH + filePath);
+            newFile.getParentFile().mkdirs();
+            if (newFile.createNewFile()) {
+                try (OutputStream outputStream = new FileOutputStream(newFile)) {
+                    outputStream.write(image.getBytes());
+                    return true;
+                } catch (IOException e) {
+                    System.out.println("Error writing file: " + e.getMessage());
+                }
+            } else {
+                System.out.println("File already exists");
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating file: " + e.getMessage());
+        }
+
+        return false;
     }
 
 
     public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream().map(productEntity -> modelMapper.map(productEntity,ProductDTO.class)).toList();
+        return productRepository.findAll().stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
     }
 
     public ProductDTO getProductById(Long id) {
-        return modelMapper.map(productRepository.findById(id),ProductDTO.class);
+        return modelMapper.map(productRepository.findById(id), ProductDTO.class);
+    }
+
+    private String getFilePath(String username, String productTitle, MultipartFile pictureFile) {
+        String[] splitPictureName = pictureFile.getOriginalFilename().split("\\.");
+        String ext = splitPictureName[splitPictureName.length - 1];
+
+        String pathPattern = "%s/%s/%s." + ext;
+        return String.format(pathPattern,
+                username,
+                transformProductTitle(productTitle),
+                UUID.randomUUID());
+    }
+
+    private String transformProductTitle(String productTitle) {
+        return productTitle.toLowerCase()
+                .replaceAll("\\s+", "_");
     }
 }

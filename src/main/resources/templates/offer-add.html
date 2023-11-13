@@ -11,12 +11,43 @@
 </div>
 
 <div class="container">
+
+
     <h2 class="text-center text-white">Upload Offer</h2>
     <form th:method="POST"
           th:action="@{/products/add}"
           th:object="${productDTO}"
-          class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center">
+          class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center"
+          enctype="multipart/form-data">
         <div class="row">
+
+            <div class="form-group">
+                <label class="text-white font-weight-bold" for="title">title</label>
+                <textarea id="title"
+                          th:field="*{title}"
+                          th:errorclass="is-invalid"
+                          type="textarea"
+                          class="form-control"
+                          rows="3"
+                          placeholder="Description">
+            </textarea>
+                <p class="invalid-feedback errors alert alert-danger">
+                    Description is required.
+                </p>
+            </div>
+
+
+            <div class="form-group">
+                <input type="file" name="image"
+                       th:field="*{image}"
+                       id="image"
+                       class="form-control-file"
+                       aria-describedby="image"
+                >
+                <small id="inputImageError"
+                       th:errors="*{image}"
+                       class="form-text bg-danger rounded">Must be valid image</small>
+            </div>
 
             <!-- model -->
             <div class="form-group col-md-6 mb-3">
@@ -92,17 +123,17 @@
 
 
                 <!-- Image Files -->
-                <div class="form-group">
-                    <label class="text-white font-weight-bold" for="imageFiles">Image Files</label>
-                    <input id="imageFiles"
-                           name="imageFiles"
-                           type="file"
-                           multiple
-                    accept="image/*"/>
-                    <p class="invalid-feedback errors alert alert-danger">
-                        Image files are required.
-                    </p>
-                </div>
+<!--                <div class="form-group">-->
+<!--                    <label class="text-white font-weight-bold" for="imageFiles">Image Files</label>-->
+<!--                    <input id="imageFiles"-->
+<!--                           name="imageFiles"-->
+<!--                           type="file"-->
+<!--                           multiple-->
+<!--                    accept="image/*"/>-->
+<!--                    <p class="invalid-feedback errors alert alert-danger">-->
+<!--                        Image files are required.-->
+<!--                    </p>-->
+<!--                </div>-->
 
 
 

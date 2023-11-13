@@ -10,18 +10,23 @@ import java.util.List;
 @Table(name = "products")
 public class ProductEntity extends BaseEntity {
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageEntity> images = new ArrayList<>();
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    // Getter and setter for images
-    public List<ImageEntity> getImages() {
-        return images;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public ProductEntity setImages(List<ImageEntity> images) {
-        this.images = images;
+    public ProductEntity setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
         return this;
     }
+
+    public ProductEntity setSubCategoryEntity(SubCategoryEntity subCategoryEntity) {
+        this.subCategoryEntity = subCategoryEntity;
+        return this;
+    }
+
     private String title;
     @Column(nullable = false)
     private BigDecimal price;

@@ -1,9 +1,11 @@
 package com.example.project.model.dtos;
 
 import com.example.project.model.entity.UserEntity;
+import com.example.project.model.validation.FileValidation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.math.BigDecimal;
@@ -23,19 +25,18 @@ public class ProductDTO {
     private String description;
     private String ownerUsername;
 
-    private List<String> imageUrls;
 
-    // Getter and setter for imageUrls
-    public List<String> getImageUrls() {
-        return imageUrls;
+//    @FileValidation(contentTypes = {"image/png", "image/jpeg"},message = "Select an image")
+    private MultipartFile image;
+
+    public MultipartFile getImage() {
+        return image;
     }
 
-    public ProductDTO setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
+    public ProductDTO setImage(MultipartFile image) {
+        this.image = image;
         return this;
     }
-
-
 
     public BigDecimal getPrice() {
         return price;
