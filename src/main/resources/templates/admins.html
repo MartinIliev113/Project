@@ -41,12 +41,12 @@
     <div class="mb-2 text-center">
       <span th:text="|${moderator.getFirstName()} ${moderator.getLastName()}|" style="display: inline-block;">Names:</span>
     </div>
-
+    <div class="mb-2 d-flex justify-content-between">
       <a class="text-primary" th:href="@{/admin/{username}(username=*{moderator.getUsername()})}">Chane role</a>
       <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
     </div>
-
   </div>
+
 </div>
 
 <div class="container">
@@ -65,8 +65,6 @@
       <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
     </div>
   </div>
-
-  <img src="images/33333/55baccd6-eeaa-496d-9824-2c7b09e8f00c.jpeg" alt="aa">
 
   <div>
     <footer></footer>

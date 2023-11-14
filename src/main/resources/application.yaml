@@ -19,6 +19,11 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  web:
+    resources:
+      static-locations: file:src/main/resources/static/
+      cache:
+        period: 0
 app:
   default:
     password: pass

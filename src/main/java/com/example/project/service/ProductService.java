@@ -18,12 +18,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProductService {
-    private static final String BASE_IMAGES_PATH = "./src/main/resources/images/";
+    private static final String BASE_IMAGES_PATH = "./src/main/resources/static/images/";
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -86,7 +85,7 @@ public class ProductService {
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream().map(productEntity -> {
             ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
-            productDTO.setImageUrl("images/"+productEntity.getImageUrl());
+            productDTO.setImageUrl("images/" + productEntity.getImageUrl());
             return productDTO;
         }).toList();
     }
@@ -114,11 +113,19 @@ public class ProductService {
 
     public List<ProductDTO> getAllByCategory(String category) {
         List<ProductEntity> productEntities = productRepository.findAllByCategory(categoryRepository.findByName(category));
-        return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
+        return productEntities.stream().map(productEntity -> {
+            ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class); //todo typemap
+            productDTO.setImageUrl("images/"+productEntity.getImageUrl());
+            return productDTO;
+        }).toList();
     }
 
     public List<ProductDTO> getAllBySubCategory(String subCategory) {
         List<ProductEntity> productEntities = productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory));
-        return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
+        return productEntities.stream().map(productEntity -> {
+            ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class); //todo typemap
+            productDTO.setImageUrl("images/"+productEntity.getImageUrl());
+            return productDTO;
+        }).toList();
     }
 }

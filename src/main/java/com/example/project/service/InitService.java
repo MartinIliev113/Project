@@ -48,7 +48,6 @@ public class InitService {
 
     private void initCategories() {
         if (categoryRepository.count() == 0) {
-            var all=new CategoryEntity().setName("all");
             var technologyCategory=new CategoryEntity().setName("Technology");
             var clothesCategory=new  CategoryEntity().setName("Clothes");
             var carsCategory=new  CategoryEntity().setName("Cars");
