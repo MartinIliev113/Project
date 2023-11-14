@@ -30,27 +30,30 @@ public class ProductController {
     public ProductDTO initProductDto() {
         return new ProductDTO();
     }
+
     @ModelAttribute("categories")
     public List<CategoryDTO> categories() {
         return categoryService.getAllCategories();
     }
 
     @GetMapping("/add")
-    public String addProduct(){
+    public String addProduct() {
         return "offer-add";
     }
+
     @PostMapping("/add")
     public String addProduct(@Valid ProductDTO productDTO,
                              BindingResult bindingResult, RedirectAttributes redirectAttributes,
-                             @AuthenticationPrincipal AppUserDetails userDetails){
-        if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("productDTO",productDTO);
+                             @AuthenticationPrincipal AppUserDetails userDetails) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("productDTO", productDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.productDTO", bindingResult);
             return "redirect:/products/add";
         }
-        productService.addProduct(productDTO,userDetails);
-        return "redirect:/products";
+        productService.addProduct(productDTO, userDetails);
+        return "redirect:/products/all";
     }
+
     @GetMapping("/all")
     public String all() {
         return "all";
@@ -59,18 +62,18 @@ public class ProductController {
     @GetMapping()
     @ResponseBody
     public List<ProductDTO> getAllProducts() {
-        productService.getAllProducts().forEach(productDTO -> System.out.println(productDTO.getImageUrl()));
         return productService.getAllProducts();
     }
 
     @GetMapping("/{category}")
     @ResponseBody
-    public  List<ProductDTO> getProductsByCategory(@PathVariable String category){
-        if(categoryService.checkCategory(category)){
+    public List<ProductDTO> getProductsByCategory(@PathVariable String category) {
+        if (categoryService.checkCategory(category)) {
             return productService.getAllByCategory(category);
         }
         return productService.getAllBySubCategory(category);
     }
+}
 
 
 
@@ -80,4 +83,4 @@ public class ProductController {
 //    public ProductDTO getProductById(@PathVariable Long id) {
 //        return productService.getProductById(id);
 //    }
-}
+

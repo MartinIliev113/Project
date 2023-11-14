@@ -53,8 +53,6 @@ public class AdminPanelController {
     }
     @PostMapping("/{username}")
     public String roleChanger(@PathVariable String username,UserRoleDto userRoleDto){
-
-
         userService.changeRole(userRoleDto,username);
 
         return  "redirect:/admin";

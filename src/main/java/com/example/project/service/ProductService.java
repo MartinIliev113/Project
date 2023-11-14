@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -49,13 +50,24 @@ public class ProductService {
         category.getProducts().add(product);
         subCategory.getProducts().add(product);
 
-        String filePath = getFilePath(userDetails.getUsername(), product.getTitle(), productDTO.getImage());
-        boolean isUploaded = uploadImage(productDTO.getImage(), filePath);
+        String primaryFilePath = getFilePath(userDetails.getUsername(), product.getTitle(), productDTO.getPrimaryImage());
+        boolean isPrimaryUploaded = uploadImage(productDTO.getPrimaryImage(), primaryFilePath);
 
-        if (isUploaded) {
-            product.setImageUrl(filePath);
+        if (isPrimaryUploaded) {
+            product.setPrimaryImageUrl(primaryFilePath);
         }
 
+
+        List<String> imageUrls = productDTO.getImages().stream()
+                .map(image -> {
+                    String filePath = getFilePath(userDetails.getUsername(), product.getTitle(), image);
+                    boolean isUploaded = uploadImage(image, filePath);
+                    return isUploaded ? filePath : null;
+                })
+                .filter(url -> url != null)
+                .collect(Collectors.toList());
+
+        product.setImageUrls(imageUrls);
 
         productRepository.save(product);
     }
@@ -85,7 +97,8 @@ public class ProductService {
     public List<ProductDTO> getAllProducts() {
         return productRepository.findAll().stream().map(productEntity -> {
             ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
-            productDTO.setImageUrl("images/" + productEntity.getImageUrl());
+            productDTO.setPrimaryImageUrl("images/" + productEntity.getPrimaryImageUrl()); //todo
+            productDTO.setImagesUrls(productEntity.getImageUrls());
             return productDTO;
         }).toList();
     }
@@ -115,7 +128,8 @@ public class ProductService {
         List<ProductEntity> productEntities = productRepository.findAllByCategory(categoryRepository.findByName(category));
         return productEntities.stream().map(productEntity -> {
             ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class); //todo typemap
-            productDTO.setImageUrl("images/"+productEntity.getImageUrl());
+            productDTO.setPrimaryImageUrl("images/"+productEntity.getPrimaryImageUrl());
+            productDTO.setImagesUrls(productEntity.getImageUrls());
             return productDTO;
         }).toList();
     }
@@ -124,7 +138,8 @@ public class ProductService {
         List<ProductEntity> productEntities = productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory));
         return productEntities.stream().map(productEntity -> {
             ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class); //todo typemap
-            productDTO.setImageUrl("images/"+productEntity.getImageUrl());
+            productDTO.setPrimaryImageUrl("images/"+productEntity.getPrimaryImageUrl());
+            productDTO.setImagesUrls(productEntity.getImageUrls());
             return productDTO;
         }).toList();
     }

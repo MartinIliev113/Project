@@ -1,6 +1,7 @@
 package com.example.project.model.entity;
 
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,15 +11,27 @@ import java.util.List;
 @Table(name = "products")
 public class ProductEntity extends BaseEntity {
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    private String  primaryImageUrl;
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getPrimaryImageUrl() {
+        return primaryImageUrl;
     }
 
-    public ProductEntity setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public ProductEntity setPrimaryImageUrl(String primaryImageUrl) {
+        this.primaryImageUrl = primaryImageUrl;
+        return this;
+    }
+
+    @Column(name = "image_url")
+    @ElementCollection
+    private List<String> imageUrls;
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public ProductEntity setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
         return this;
     }
 

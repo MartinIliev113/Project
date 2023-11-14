@@ -8,10 +8,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.math.BigDecimal;
-
+import java.util.List;
 
 
 public class ProductDTO {
+
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public ProductDTO setId(Long id) {
+        this.id = id;
+        return this;
+    }
 
     private String title;
     @Positive
@@ -25,25 +36,47 @@ public class ProductDTO {
     private String ownerUsername;
 
 
-    @FileValidation(contentTypes = {"image/png", "image/jpeg"},message = "Select an image")
-    private MultipartFile image;
+    //@FileValidation(contentTypes = {"image/png", "image/jpeg"},message = "Select an image")
+    private List<MultipartFile> images;
 
-    public MultipartFile getImage() {
-        return image;
+    private MultipartFile primaryImage;
+    private String primaryImageUrl;
+
+    public List<String> imagesUrls;
+
+    public List<String> getImagesUrls() {
+        return imagesUrls;
     }
 
-    public ProductDTO setImage(MultipartFile image) {
-        this.image = image;
+    public ProductDTO setImagesUrls(List<String> imagesUrls) {
+        this.imagesUrls = imagesUrls;
         return this;
     }
-    private String imageUrl;
 
-    public String getImageUrl() {
-        return imageUrl;
+    public List<MultipartFile> getImages() {
+        return images;
     }
 
-    public ProductDTO setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public ProductDTO setImages(List<MultipartFile> images) {
+        this.images = images;
+        return this;
+    }
+
+    public MultipartFile getPrimaryImage() {
+        return primaryImage;
+    }
+
+    public ProductDTO setPrimaryImage(MultipartFile primaryImage) {
+        this.primaryImage = primaryImage;
+        return this;
+    }
+
+    public String getPrimaryImageUrl() {
+        return primaryImageUrl;
+    }
+
+    public ProductDTO setPrimaryImageUrl(String primaryImageUrl) {
+        this.primaryImageUrl = primaryImageUrl;
         return this;
     }
 
