@@ -103,9 +103,10 @@
                 cardText.style.textOverflow = 'ellipsis';
 
                 const button = document.createElement('a');
-                button.href = '#';
+                button.href = '/products/details/' + product.id;
                 button.className = 'btn btn-primary btn-sm';
                 button.textContent = 'Details';
+
 
                 cardBody.appendChild(cardTitle);
                 cardBody.appendChild(cardImage);

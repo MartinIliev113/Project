@@ -8,6 +8,7 @@ import com.example.project.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -73,14 +74,12 @@ public class ProductController {
         }
         return productService.getAllBySubCategory(category);
     }
+
+    @GetMapping("details/{id}")
+    public String productDetails(@PathVariable Long id, Model model) {
+        model.addAttribute( "productDTO",productService.getProductById(id));
+        ProductDTO byId = productService.getProductById(id);
+
+        return "product-details";
+    }
 }
-
-
-
-
-//    @GetMapping("/{id}")
-//    @ResponseBody
-//    public ProductDTO getProductById(@PathVariable Long id) {
-//        return productService.getProductById(id);
-//    }
-

@@ -104,7 +104,10 @@ public class ProductService {
     }
 
     public ProductDTO getProductById(Long id) {
-        return modelMapper.map(productRepository.findById(id), ProductDTO.class);
+        ProductEntity productEntity = productRepository.findById(id).get();
+        ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
+        productDTO.setImagesUrls(productEntity.getImageUrls());
+        return productDTO;
     }
 
     private String getFilePath(String username, String productTitle, MultipartFile pictureFile) {
