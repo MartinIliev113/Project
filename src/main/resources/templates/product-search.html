@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/head}">
+</head>
+
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"> Navbar </div>
+
+<div class="container">
+    <h2 class="text-center text-white">Search for products</h2>
+    <form th:method="POST" th:action="@{/products/search}" th:object="${searchProductDTO}"
+          class="form-inline" style="justify-content: center; margin-top: 50px;">
+
+        <div style="position: relative">
+            <!-- Your search input fields -->
+            <input th:field="*{title}" th:errorclass="is-invalid" class="form-control mr-sm-2" style="width: 280px;"
+                   type="search" placeholder="Listing name..." aria-label="Search" id="searchOffer" />
+            <input th:field="*{minPrice}" th:errorclass="is-invalid" class="form-control mr-sm-2" style="width: 280px;"
+                   type="search" placeholder="Min price..." aria-label="Search" id="minPrice" />
+            <input th:field="*{maxPrice}" th:errorclass="is-invalid" class="form-control mr-sm-2" style="width: 280px;"
+                   type="search" placeholder="Max price..." aria-label="Search" id="maxPrice" />
+            <small id="searchOfferHelpInline" class="bg-danger text-light rounded invalid-feedback"
+                   style="width: 97%; position: absolute; padding: 3px 15px; text-align: center;">
+                Try writing something this time.
+            </small>
+        </div>
+        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+
+
+<!--        todo show only when search button is preessed-->
+        <h1 id="listingsTitle" class="text-center text-info"
+            th:text="${products != null && #lists.size(products) > 0 ? 'Found ' + #lists.size(products) + ' product' + (#lists.size(products) > 1 ? 's' : '') : 'No products found'}">
+        </h1>
+
+
+
+        <div class="container">
+            <div id="productCards" class="row">
+                <!-- Iterate over products and create cards -->
+                <div th:each="product : ${products}" class="col-md-4">
+                    <div class="card h-100" style="width: 100%; margin-bottom: 5rem;">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <h5 class="card-title text-center" th:text="${product.title}"></h5>
+
+                        <img th:src="@{'/images/' + ${product.primaryImageUrl}}"
+                             class="card-img-top" alt="Product Image" style="height: 300px; object-fit: cover;">
+
+
+                            <p class="card-text" style="max-height: 150px; overflow: hidden; text-overflow: ellipsis;"
+                               th:text="${product.description}"></p>
+
+                            <a th:href="@{'/products/details/' + ${product.id}}"
+                               class="btn btn-primary btn-sm">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+</body>
+</html>

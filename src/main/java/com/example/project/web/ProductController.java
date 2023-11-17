@@ -4,9 +4,11 @@ import com.example.project.model.AppUserDetails;
 import com.example.project.model.dtos.CategoryDTO;
 import com.example.project.model.dtos.CommentDTO;
 import com.example.project.model.dtos.ProductDTO;
+import com.example.project.model.dtos.SearchProductDTO;
 import com.example.project.service.CategoryService;
 import com.example.project.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,6 +38,8 @@ public class ProductController {
     public CommentDTO initCommentDTO(){
         return new CommentDTO();
     }
+    @ModelAttribute("searchProductDTO")
+    public SearchProductDTO initSearchProductDTO(){return new SearchProductDTO();}
 
     @ModelAttribute("categories")
     public List<CategoryDTO> categories() {
@@ -86,4 +90,54 @@ public class ProductController {
 
         return "product-details";
     }
+
+    @GetMapping("/search")
+    public String search(){
+        return "product-search";
+    }
+//    @PostMapping("/search")
+//    public ResponseEntity<List<ProductDTO>> search(
+//            @Valid @ModelAttribute SearchProductDTO searchProductDTO,
+//            BindingResult bindingResult) {
+//
+//        if (bindingResult.hasErrors()) {
+//            // Handle validation errors and return a bad request response
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        // Perform the search and get the results
+//        List<ProductDTO> searchResults = productService.searchOffer(searchProductDTO);
+//
+//        // Return the search results in the response body
+//        return ResponseEntity.ok(searchResults);
+//    }
+
+    @PostMapping ("/search")
+    public String search(@Valid SearchProductDTO searchProductDTO,
+                              BindingResult bindingResult,
+                              Model model) {
+
+        boolean searchButtonPressed=false;
+        model.addAttribute("searchButtonPressed", searchButtonPressed);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("searchProductDTO", searchProductDTO);
+            model.addAttribute(
+                    "org.springframework.validation.BindingResult.searchProductDTO",
+                    bindingResult);
+            return "product-search";
+        }
+
+        if (!model.containsAttribute("searchProductDTO")) {
+            model.addAttribute("searchProductDTO", searchProductDTO);
+        }
+
+        if (!searchProductDTO.isEmpty()) {
+            List<ProductDTO> dtos = productService.searchOffer(searchProductDTO);
+            model.addAttribute("products", productService.searchOffer(searchProductDTO));
+        }
+
+        return "product-search";
+    }
+
 }

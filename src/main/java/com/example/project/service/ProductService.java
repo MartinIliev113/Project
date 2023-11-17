@@ -3,13 +3,11 @@ package com.example.project.service;
 import com.example.project.model.AppUserDetails;
 import com.example.project.model.dtos.CommentDTO;
 import com.example.project.model.dtos.ProductDTO;
+import com.example.project.model.dtos.SearchProductDTO;
 import com.example.project.model.entity.CategoryEntity;
 import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.entity.SubCategoryEntity;
-import com.example.project.repository.CategoryRepository;
-import com.example.project.repository.ProductRepository;
-import com.example.project.repository.SubCategoryRepository;
-import com.example.project.repository.UserRepository;
+import com.example.project.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -123,11 +121,17 @@ public class ProductService {
 
     public List<ProductDTO> getAllByCategory(String category) {
         List<ProductEntity> productEntities = productRepository.findAllByCategory(categoryRepository.findByName(category));
-        return productEntities.stream().map(productEntity->modelMapper.map(productEntity, ProductDTO.class)).toList();
+        return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
     }
 
     public List<ProductDTO> getAllBySubCategory(String subCategory) {
         List<ProductEntity> productEntities = productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory));
         return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
+    }
+
+    public List<ProductDTO> searchOffer(SearchProductDTO searchProductDTO) {
+        return productRepository.findAll(new ProductSpecification(searchProductDTO))
+                .stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class))
+                .toList();
     }
 }
