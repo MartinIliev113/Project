@@ -2,6 +2,7 @@ package com.example.project.web;
 
 import com.example.project.model.AppUserDetails;
 import com.example.project.model.dtos.CategoryDTO;
+import com.example.project.model.dtos.CommentDTO;
 import com.example.project.model.dtos.ProductDTO;
 import com.example.project.service.CategoryService;
 import com.example.project.service.ProductService;
@@ -30,6 +31,10 @@ public class ProductController {
     @ModelAttribute("productDTO")
     public ProductDTO initProductDto() {
         return new ProductDTO();
+    }
+    @ModelAttribute("commentDTO")
+    public CommentDTO initCommentDTO(){
+        return new CommentDTO();
     }
 
     @ModelAttribute("categories")
@@ -78,7 +83,6 @@ public class ProductController {
     @GetMapping("details/{id}")
     public String productDetails(@PathVariable Long id, Model model) {
         model.addAttribute( "productDTO",productService.getProductById(id));
-        ProductDTO byId = productService.getProductById(id);
 
         return "product-details";
     }

@@ -1,6 +1,7 @@
 package com.example.project.service;
 
 import com.example.project.model.AppUserDetails;
+import com.example.project.model.dtos.CommentDTO;
 import com.example.project.model.dtos.ProductDTO;
 import com.example.project.model.entity.CategoryEntity;
 import com.example.project.model.entity.ProductEntity;
@@ -95,19 +96,12 @@ public class ProductService {
 
 
     public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream().map(productEntity -> {
-            ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
-            productDTO.setPrimaryImageUrl("images/" + productEntity.getPrimaryImageUrl()); //todo
-            productDTO.setImagesUrls(productEntity.getImageUrls());
-            return productDTO;
-        }).toList();
+        return productRepository.findAll().stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
     }
 
     public ProductDTO getProductById(Long id) {
         ProductEntity productEntity = productRepository.findById(id).get();
-        ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
-        productDTO.setImagesUrls(productEntity.getImageUrls());
-        return productDTO;
+        return modelMapper.map(productEntity, ProductDTO.class);
     }
 
     private String getFilePath(String username, String productTitle, MultipartFile pictureFile) {
@@ -129,21 +123,11 @@ public class ProductService {
 
     public List<ProductDTO> getAllByCategory(String category) {
         List<ProductEntity> productEntities = productRepository.findAllByCategory(categoryRepository.findByName(category));
-        return productEntities.stream().map(productEntity -> {
-            ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class); //todo typemap
-            productDTO.setPrimaryImageUrl("images/"+productEntity.getPrimaryImageUrl());
-            productDTO.setImagesUrls(productEntity.getImageUrls());
-            return productDTO;
-        }).toList();
+        return productEntities.stream().map(productEntity->modelMapper.map(productEntity, ProductDTO.class)).toList();
     }
 
     public List<ProductDTO> getAllBySubCategory(String subCategory) {
         List<ProductEntity> productEntities = productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory));
-        return productEntities.stream().map(productEntity -> {
-            ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class); //todo typemap
-            productDTO.setPrimaryImageUrl("images/"+productEntity.getPrimaryImageUrl());
-            productDTO.setImagesUrls(productEntity.getImageUrls());
-            return productDTO;
-        }).toList();
+        return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
     }
 }

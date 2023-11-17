@@ -8,10 +8,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class ProductDTO {
+
+    public ProductDTO() {
+        comments=new ArrayList<>();
+    }
 
     private Long id;
 
@@ -43,6 +48,17 @@ public class ProductDTO {
     private String primaryImageUrl;
 
     public List<String> imagesUrls;
+
+    private List<CommentDTO> comments;
+
+    public List<CommentDTO> getComments() {
+        return comments;
+    }
+
+    public ProductDTO setComments(List<CommentDTO> comments) {
+        this.comments = comments;
+        return this;
+    }
 
     public List<String> getImagesUrls() {
         return imagesUrls;

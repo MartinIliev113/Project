@@ -50,6 +50,22 @@ public class ProductEntity extends BaseEntity {
     @ManyToOne
     private UserEntity owner;
 
+    @OneToMany
+    private List<CommentEntity> comments;
+
+    public ProductEntity() {
+        this.comments=new ArrayList<>();
+    }
+
+    public List<CommentEntity> getComments() {
+        return comments;
+    }
+
+    public ProductEntity setComments(List<CommentEntity> comments) {
+        this.comments = comments;
+        return this;
+    }
+
     public String getTitle() {
         return title;
     }
