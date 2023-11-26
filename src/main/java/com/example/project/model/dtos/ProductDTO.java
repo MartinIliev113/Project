@@ -47,12 +47,32 @@ public class ProductDTO {
     private MultipartFile primaryImage;
     private String primaryImageUrl;
 
-    public List<String> imagesUrls;
+    public List<String> imageUrls;
 
     private List<CommentDTO> comments;
+    private String owner;
+    private boolean viewerIsOwner;
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public ProductDTO setOwner(String owner) {
+        this.owner = owner;
+        return this;
+    }
 
     public List<CommentDTO> getComments() {
         return comments;
+    }
+
+    public boolean isViewerIsOwner() {
+        return viewerIsOwner;
+    }
+
+    public ProductDTO setViewerIsOwner(boolean viewerIsOwner) {
+        this.viewerIsOwner = viewerIsOwner;
+        return this;
     }
 
     public ProductDTO setComments(List<CommentDTO> comments) {
@@ -60,12 +80,12 @@ public class ProductDTO {
         return this;
     }
 
-    public List<String> getImagesUrls() {
-        return imagesUrls;
+    public List<String> getImageUrls() {
+        return imageUrls;
     }
 
-    public ProductDTO setImagesUrls(List<String> imagesUrls) {
-        this.imagesUrls = imagesUrls;
+    public ProductDTO setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
         return this;
     }
 

@@ -1,14 +1,13 @@
 package com.example.project.service;
 
 import com.example.project.model.AppUserDetails;
-import com.example.project.model.dtos.CommentDTO;
 import com.example.project.model.dtos.ProductDTO;
 import com.example.project.model.dtos.SearchProductDTO;
-import com.example.project.model.entity.CategoryEntity;
-import com.example.project.model.entity.ProductEntity;
-import com.example.project.model.entity.SubCategoryEntity;
+import com.example.project.model.entity.*;
+import com.example.project.model.enums.UserRoleEnum;
 import com.example.project.repository.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,8 +15,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,14 +27,16 @@ public class ProductService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
     private final SubCategoryRepository subCategoryRepository;
+    private final CommentService commentService;
 
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper, SubCategoryRepository subCategoryRepository) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper, SubCategoryRepository subCategoryRepository, CommentService commentService) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.subCategoryRepository = subCategoryRepository;
+        this.commentService = commentService;
     }
 
     public void addProduct(ProductDTO productDTO, AppUserDetails userDetails) {
@@ -97,9 +97,14 @@ public class ProductService {
         return productRepository.findAll().stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
     }
 
-    public ProductDTO getProductById(Long id) {
+    public ProductDTO getProductById(Long id, UserDetails viewer) {
         ProductEntity productEntity = productRepository.findById(id).get();
-        return modelMapper.map(productEntity, ProductDTO.class);
+        ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
+        productDTO.setOwner(productEntity.getOwner().getUsername());
+        if (isOwner(productEntity,viewer.getUsername())) {
+            productDTO.setViewerIsOwner(true);
+        }
+        return productDTO;
     }
 
     private String getFilePath(String username, String productTitle, MultipartFile pictureFile) {
@@ -134,4 +139,64 @@ public class ProductService {
                 .stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class))
                 .toList();
     }
+    public boolean isOwner(Long id, String userName) {
+        return isOwner(
+                productRepository.findById(id).orElse(null),
+                userName
+        );
+    }
+
+    private boolean isOwner(ProductEntity productEntity, String username) {
+        if (productEntity == null||username==null) {
+            // anonymous users own no offers
+            return false;
+        }
+
+        UserEntity viewerEntity =
+                userRepository
+                        .findByEmail(username)
+                        .orElseThrow(() -> new IllegalArgumentException("Unknown user..."));
+
+        if (isAdmin(viewerEntity)) {
+            // all admins own all offers
+            return true;
+        }
+
+        return Objects.equals(
+                productEntity.getOwner().getId(),
+                viewerEntity.getId());
+    }
+
+    private boolean isAdmin(UserEntity userEntity) {
+        return userEntity
+                .getRoles()
+                .stream()
+                .map(UserRoleEntity::getRole)
+                .anyMatch(r -> UserRoleEnum.ADMIN == r);
+    }
+
+
+    public void removeProduct(Long id) {
+        // todo
+        ProductEntity productEntity = productRepository.findById(id).orElse(null);
+
+        if (productEntity != null) {
+            SubCategoryEntity subCategory = productEntity.getSubCategory();
+            subCategory.getProducts().remove(productEntity);
+            CategoryEntity category = productEntity.getCategory();
+            category.getProducts().remove(productEntity);
+
+            List<CommentEntity> comments = new ArrayList<>(productEntity.getComments());
+            Iterator<CommentEntity> iterator = comments.iterator();
+
+            while (iterator.hasNext()) {
+                CommentEntity comment = iterator.next();
+                iterator.remove();
+                commentService.delete(comment.getId());
+            }
+
+            productRepository.delete(productEntity);
+        }
+    }
 }
+

@@ -119,4 +119,5 @@ public class ProductEntity extends BaseEntity {
         this.category = category;
         return this;
     }
+
 }

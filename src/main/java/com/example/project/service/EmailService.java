@@ -23,7 +23,7 @@ public class EmailService {
         this.projectEmail = projectEmail;
     }
 
-    public void sendRegistrationEmail(String userEmail, String username) {
+    public void sendRegistrationEmail(String userEmail, String username,String activationCode) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         MimeMessageHelper mimeMessageHelper=new MimeMessageHelper(mimeMessage);
@@ -33,7 +33,7 @@ public class EmailService {
             mimeMessageHelper.setFrom(projectEmail);
             mimeMessageHelper.setReplyTo(projectEmail);
             mimeMessageHelper.setSubject("Welcome to project!");
-            mimeMessageHelper.setText(generateRegistrationEmailBody(username),true);
+            mimeMessageHelper.setText(generateRegistrationEmailBody(username,activationCode),true);
 
             javaMailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException e) {
@@ -41,10 +41,11 @@ public class EmailService {
         }
     }
 
-    private String generateRegistrationEmailBody(String username) {
+    private String generateRegistrationEmailBody(String username,String activationCode) {
 
         Context context = new Context();
         context.setVariable("username", username);
+        context.setVariable("activation_code", activationCode);
 
         return templateEngine.process("email/registration-email", context);
     }

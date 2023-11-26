@@ -9,7 +9,9 @@ import com.example.project.service.CategoryService;
 import com.example.project.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -85,8 +87,8 @@ public class ProductController {
     }
 
     @GetMapping("details/{id}")
-    public String productDetails(@PathVariable Long id, Model model) {
-        model.addAttribute( "productDTO",productService.getProductById(id));
+    public String productDetails(@PathVariable Long id, Model model,@AuthenticationPrincipal UserDetails viewer) {
+        model.addAttribute( "productDTO",productService.getProductById(id,viewer));
 
         return "product-details";
     }
@@ -133,11 +135,18 @@ public class ProductController {
         }
 
         if (!searchProductDTO.isEmpty()) {
-            List<ProductDTO> dtos = productService.searchOffer(searchProductDTO);
             model.addAttribute("products", productService.searchOffer(searchProductDTO));
         }
 
         return "product-search";
     }
+
+    @PreAuthorize("@productService.isOwner(#id, #principal.username)")
+    @DeleteMapping("/{id}")
+    public String removeProduct(@PathVariable Long id){
+        productService.removeProduct(id);
+        return "redirect:/products/all";
+    }
+
 
 }

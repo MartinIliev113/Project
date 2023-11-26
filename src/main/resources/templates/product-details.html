@@ -8,6 +8,12 @@
 <body>
 
 <div class="container-fluid">
+    <div class="card-body" th:if="${productDTO.viewerIsOwner}">
+        <form th:method="delete"
+              th:action="@{/products/{id}(id=${productDTO.getId()})}">
+            <input type="submit" value="Delete" class="link card-link"/>
+        </form>
+    </div>
     <div class="row">
         <!-- Left Column -->
         <div class="col-md-4">
@@ -20,7 +26,7 @@
                         </div>
                     </div>
 
-                    <div th:each="image : ${productDTO.imagesUrls}" th:classappend="'carousel-item'">
+                    <div th:each="image : ${productDTO.imageUrls}" th:classappend="'carousel-item'">
                         <div class="d-flex justify-content-center align-items-center">
                             <img th:src="@{'/images/' + ${image}}" class="d-block w-100" style="max-height: 300px;" alt="Product Image">
                         </div>
@@ -41,6 +47,9 @@
         <div class="col-md-6">
             <p th:text="${productDTO.description}" style="margin-top: 80px;"></p>
             <p th:text="'Price: $' + ${productDTO.price}"></p>
+            <div class="card-text"><span>• Seller</span>
+                <th:block th:text="${productDTO.owner}">Pesho Petrov</th:block>
+            </div>
         </div>
     </div>
 
@@ -52,11 +61,11 @@
                 <h4 th:text="${comment.textContent}">Leave a comment</h4>
                 <label th:text="${comment.authorUsername == null ? 'Anonymous' : comment.getAuthorUsername()}">Message</label>
                 <div>
-<!--                    <form th:unless="${comment.approved}" th:method="PATCH" th:action="@{/comments/{id}/approve/{routeId}(id=${comment.id}, routeId=${route.id})}">-->
-<!--                        <button class="btn btn-success" type="submit" th:text="'Approve'"></button>-->
-<!--                    </form>-->
+                    <!--                    <form th:unless="${comment.approved}" th:method="PATCH" th:action="@{/comments/{id}/approve/{routeId}(id=${comment.id}, routeId=${route.id})}">-->
+                    <!--                        <button class="btn btn-success" type="submit" th:text="'Approve'"></button>-->
+                    <!--                    </form>-->
                     <form  th:method="DELETE" th:action="@{/comments/{id}/{productId}(id=${comment.id}, productId=${productDTO.id})}">
-<!--                        TODO MAKE USER BE ABLE TO DELETE HIS OWN COMMENT-->
+                        <!--                        TODO MAKE USER BE ABLE TO DELETE HIS OWN COMMENT-->
                         <button class="btn btn-danger" type="submit" th:text="'Delete'" sec:authorize="hasRole('MODERATOR')" ></button>
                     </form>
                 </div>
