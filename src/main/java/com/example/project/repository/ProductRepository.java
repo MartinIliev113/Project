@@ -4,6 +4,8 @@ import com.example.project.model.entity.CategoryEntity;
 import com.example.project.model.entity.ProductEntity;
 import com.example.project.model.entity.SubCategoryEntity;
 import com.example.project.model.entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -21,4 +23,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity,Long>,
     List<ProductEntity> findAll(Specification<ProductEntity> spec);
 
 
+    Page<ProductEntity> findAllByCategory(CategoryEntity category, Pageable pageable);
+
+    Page<ProductEntity> findAllBySubCategory(SubCategoryEntity byName, Pageable pageable);
 }

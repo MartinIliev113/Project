@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +53,16 @@ public class ProductEntity extends BaseEntity {
 
     @OneToMany
     private List<CommentEntity> comments;
+    private LocalDateTime addedOn;
+
+    public LocalDateTime getAddedOn() {
+        return addedOn;
+    }
+
+    public ProductEntity setAddedOn(LocalDateTime addedOn) {
+        this.addedOn = addedOn;
+        return this;
+    }
 
     public ProductEntity() {
         this.comments=new ArrayList<>();

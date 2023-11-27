@@ -21,6 +21,12 @@
           </option>
         </optgroup>
       </select>
+      <label class="text-white font-weight-bold" for="sort">Sort by</label>
+      <select id="sort" name="sort" class="form-control">
+        <option value="addedOn">Added On</option>
+        <option value="price">Price</option>
+      </select>
+
       <p class="invalid-feedback errors alert alert-danger"> Category is required. </p>
       <button type="button" onclick="fetchProducts(0)" class="btn btn-primary mt-2">Search</button>
     </form>
@@ -33,7 +39,6 @@
 
 <div class="container">
   <div id="productCards" class="row">
-    <!-- Product cards will be dynamically added here -->
   </div>
 </div>
 
@@ -72,7 +77,8 @@
 
   function fetchProducts(page) {
     let category = document.getElementById('category').value;
-    let url = category ? `/products/${category}?page=${page}` : `/products?page=${page}`;
+    let sort = document.getElementById('sort').value; // Get the selected sort option
+    let url = category ? `/products/${category}?page=${page}&sort=${sort}` : `/products?page=${page}&sort=${sort}`;
 
     fetch(url)
             .then(response => {
@@ -138,7 +144,7 @@
 
               updateTitle(category);
 
-              // Enable/disable pagination buttons based on available pages
+
               const prevPage = document.getElementById('prevPage');
               const nextPage = document.getElementById('nextPage');
 

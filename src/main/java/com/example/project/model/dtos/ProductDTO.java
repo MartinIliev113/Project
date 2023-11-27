@@ -52,6 +52,16 @@ public class ProductDTO {
     private List<CommentDTO> comments;
     private String owner;
     private boolean viewerIsOwner;
+    private String addedOn;
+
+    public String getAddedOn() {
+        return addedOn;
+    }
+
+    public ProductDTO setAddedOn(String addedOn) {
+        this.addedOn = addedOn;
+        return this;
+    }
 
     public String getOwner() {
         return owner;

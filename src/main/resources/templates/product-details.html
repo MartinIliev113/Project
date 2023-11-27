@@ -47,11 +47,14 @@
         <div class="col-md-6">
             <p th:text="${productDTO.description}" style="margin-top: 80px;"></p>
             <p th:text="'Price: $' + ${productDTO.price}"></p>
+            <p th:text="'Added on: ' + ${productDTO.addedOn}"></p>
             <div class="card-text"><span>• Seller</span>
                 <th:block th:text="${productDTO.owner}">Pesho Petrov</th:block>
             </div>
         </div>
     </div>
+
+
 
 
     <section class="comments">

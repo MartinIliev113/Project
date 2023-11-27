@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class ProductService {
         product.setOwner(userRepository.findById(userDetails.getId()).get());//TODO FIX
         category.getProducts().add(product);
         subCategory.getProducts().add(product);
+        product.setAddedOn(LocalDateTime.now());
 
         String primaryFilePath = getFilePath(userDetails.getUsername(), product.getTitle(), productDTO.getPrimaryImage());
         boolean isPrimaryUploaded = uploadImage(productDTO.getPrimaryImage(), primaryFilePath);
@@ -126,14 +128,14 @@ public class ProductService {
     }
 
 
-    public List<ProductDTO> getAllByCategory(String category) {
-        List<ProductEntity> productEntities = productRepository.findAllByCategory(categoryRepository.findByName(category));
-        return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
+    public Page<ProductDTO> getAllByCategory(String category,Pageable pageable) {
+        return productRepository.findAllByCategory(categoryRepository.findByName(category), pageable)
+                .map(productEntity->modelMapper.map(productEntity,ProductDTO.class));
     }
 
-    public List<ProductDTO> getAllBySubCategory(String subCategory) {
-        List<ProductEntity> productEntities = productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory));
-        return productEntities.stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
+    public Page<ProductDTO> getAllBySubCategory(String subCategory,Pageable pageable) {
+        return productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory), pageable)
+                .map(productEntity -> modelMapper.map(productEntity,ProductDTO.class));
     }
 
     public List<ProductDTO> searchOffer(SearchProductDTO searchProductDTO) {

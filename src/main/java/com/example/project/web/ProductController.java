@@ -77,10 +77,9 @@ public class ProductController {
 
     @GetMapping()
     @ResponseBody
-    public Page<ProductDTO> getAllProducts(@PageableDefault(page = 0, size = 3) Pageable pageable) {
+    public Page<ProductDTO> getAllProducts(@PageableDefault(page = 0, size = 3) Pageable pageable,
+                                           @RequestParam(name = "sort", defaultValue = "addedOn") String sort) {
         Page<ProductDTO> productPage = productService.getAllProducts(pageable);
-
-        // Create a new Page with the same content and pageable settings
         return new PageImpl<>(productPage.getContent(), pageable, productPage.getTotalElements());
     }
 
@@ -88,12 +87,18 @@ public class ProductController {
 
     @GetMapping("/{category}")
     @ResponseBody
-    public List<ProductDTO> getProductsByCategory(@PathVariable String category) {
+    public Page<ProductDTO> getProductsByCategory(
+            @PathVariable String category,
+            @PageableDefault(page = 0, size = 3) Pageable pageable,
+            @RequestParam(name = "sort", defaultValue = "addedOn") String sort) {
         if (categoryService.checkCategory(category)) {
-            return productService.getAllByCategory(category);
+            Page<ProductDTO> productPage = productService.getAllByCategory(category, pageable);
+            return new PageImpl<>(productPage.getContent(), pageable, productPage.getTotalElements());
         }
-        return productService.getAllBySubCategory(category);
+        Page<ProductDTO> productPage = productService.getAllBySubCategory(category, pageable);
+        return new PageImpl<>(productPage.getContent(), pageable, productPage.getTotalElements());
     }
+
 
     @GetMapping("details/{id}")
     public String productDetails(@PathVariable Long id, Model model,@AuthenticationPrincipal UserDetails viewer) {
