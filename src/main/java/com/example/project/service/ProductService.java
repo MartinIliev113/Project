@@ -7,6 +7,8 @@ import com.example.project.model.entity.*;
 import com.example.project.model.enums.UserRoleEnum;
 import com.example.project.repository.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -93,9 +95,9 @@ public class ProductService {
     }
 
 
-    public List<ProductDTO> getAllProducts() {
-        return productRepository.findAll().stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
-    }
+//    public List<ProductDTO> getAllProducts() {
+//        return productRepository.findAll().stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
+//    }
 
     public ProductDTO getProductById(Long id, UserDetails viewer) {
         ProductEntity productEntity = productRepository.findById(id).get();
@@ -139,6 +141,9 @@ public class ProductService {
                 .stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class))
                 .toList();
     }
+    public Page<ProductDTO> getAllProducts(Pageable pageable){
+        return productRepository.findAll(pageable).map(productEntity->modelMapper.map(productEntity,ProductDTO.class));
+    }
     public boolean isOwner(Long id, String userName) {
         return isOwner(
                 productRepository.findById(id).orElse(null),
@@ -154,7 +159,7 @@ public class ProductService {
 
         UserEntity viewerEntity =
                 userRepository
-                        .findByEmail(username)
+                        .findByUsername(username)
                         .orElseThrow(() -> new IllegalArgumentException("Unknown user..."));
 
         if (isAdmin(viewerEntity)) {

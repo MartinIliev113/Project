@@ -8,6 +8,10 @@ import com.example.project.model.dtos.SearchProductDTO;
 import com.example.project.service.CategoryService;
 import com.example.project.service.ProductService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -73,9 +77,14 @@ public class ProductController {
 
     @GetMapping()
     @ResponseBody
-    public List<ProductDTO> getAllProducts() {
-        return productService.getAllProducts();
+    public Page<ProductDTO> getAllProducts(@PageableDefault(page = 0, size = 3) Pageable pageable) {
+        Page<ProductDTO> productPage = productService.getAllProducts(pageable);
+
+        // Create a new Page with the same content and pageable settings
+        return new PageImpl<>(productPage.getContent(), pageable, productPage.getTotalElements());
     }
+
+
 
     @GetMapping("/{category}")
     @ResponseBody
