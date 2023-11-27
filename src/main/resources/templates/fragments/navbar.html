@@ -47,21 +47,20 @@
         </li>
 
         <!-- Language selection using images -->
+        <!-- Language selection using images -->
         <li class="nav-item">
-          <form th:method="get" class="d-flex">
+          <form id="languageForm" th:method="get" class="d-flex">
             <label class="text-white mr-2" th:text="#{navbar_language}" th:for="lang"></label>
 
             <!-- English flag -->
-            <span class="language-option" onclick="changeLanguage('en_US')">
-            <img src="/images/bg_flag.png" alt="English" style="width: 20px; height: 20px;">
-        </span>
+            <a class="language-option" href="javascript:void(0)" onclick="changeLanguage('en_US')">
+              <img src="/images/en_flag.png" alt="English" style="width: 20px; height: 20px;">
+            </a>
 
             <!-- Bulgarian flag -->
-            <span class="ml-2 language-option" onclick="changeLanguage('bg_BG')">
-            <img src="/images/bg_flag.png" alt="Български" style="width: 20px; height: 20px;">
-        </span>
-
-            <!-- Add any additional styling or spacing as needed -->
+            <a class="ml-2 language-option" href="javascript:void(0)" onclick="changeLanguage('bg_BG')">
+              <img src="/images/bg_flag.png" alt="Български" style="width: 20px; height: 20px;">
+            </a>
 
             <input type="hidden" id="selectedLanguage" name="lang" th:value="${#locale.toString()}">
           </form>
@@ -70,9 +69,10 @@
         <script>
           function changeLanguage(language) {
             document.getElementById('selectedLanguage').value = language;
-            document.forms[0].submit();
+            document.getElementById('languageForm').submit();
           }
         </script>
+
 
 
       </ul>

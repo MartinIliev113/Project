@@ -10,9 +10,9 @@
 <div class="container">
   <div class="form-group col-md-6 mb-3 mx-auto">
     <form id="searchForm" class="text-center">
-      <label class="text-white font-weight-bold" for="category">Search by category</label>
+      <label  th:text="#{all_search_category}" class="text-white font-weight-bold" for="category">Search by category</label>
       <select id="category" name="category" class="form-control">
-        <option value="" selected>- Select category -</option>
+        <option th:text="#{all_select_category}" value="" selected>- Select category -</option>
         <optgroup th:each="categorie : ${categories}" th:label="${categorie.getName()}">
           <option th:text="|All from ${categorie.getName()}|" th:value="${categorie.getName()}"></option>
           <option th:each="subCategory : ${categorie.getSubCategories()}"
@@ -21,7 +21,7 @@
           </option>
         </optgroup>
       </select>
-      <label class="text-white font-weight-bold" for="sort">Sort by</label>
+      <label th:text="#{all_sort_by}" class="text-white font-weight-bold" for="sort">Sort by</label>
       <select id="sort" name="sort" class="form-control">
         <option value="addedOn">Added On</option>
         <option value="price">Price</option>
