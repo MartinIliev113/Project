@@ -1,7 +1,5 @@
 package com.example.project.service;
 
-import com.example.project.model.entity.UserActivationCodeEntity;
-import com.example.project.repository.UserActivationCodeRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +9,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.Optional;
-
 
 @Service
 public class EmailService {
@@ -21,7 +17,7 @@ public class EmailService {
     private final String projectEmail;
 
     public EmailService(TemplateEngine templateEngine, JavaMailSender javaMailSender,
-                        @Value("{mail.project}") String projectEmail, UserActivationCodeRepository userActivationCodeRepository) {
+                        @Value("{mail.project}") String projectEmail) {
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;
         this.projectEmail = projectEmail;
@@ -43,6 +39,32 @@ public class EmailService {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
+    }
+    public void sendForgotPassWordEmail(String userEmail, String username, String forgotPasswordCode) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
+        MimeMessageHelper mimeMessageHelper=new MimeMessageHelper(mimeMessage);
+
+        try {
+            mimeMessageHelper.setTo(userEmail);
+            mimeMessageHelper.setFrom(projectEmail);
+            mimeMessageHelper.setReplyTo(projectEmail);
+            mimeMessageHelper.setSubject("Forgotten password!");
+            mimeMessageHelper.setText(generateForgotPasswordEmailBody(username,forgotPasswordCode),true);
+
+            javaMailSender.send(mimeMessageHelper.getMimeMessage());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String generateForgotPasswordEmailBody(String username, String forgotPasswordCode) {
+        Context context = new Context();
+        context.setVariable("username", username);
+        context.setVariable("forgot_password_code", forgotPasswordCode);
+
+        return templateEngine.process("email/forgot-email", context);
+
     }
 
     private String generateRegistrationEmailBody(String username,String activationCode) {

@@ -6,6 +6,7 @@ import com.example.project.model.dtos.UserRoleDto;
 import com.example.project.model.entity.UserEntity;
 import com.example.project.model.entity.UserRoleEntity;
 import com.example.project.model.enums.UserRoleEnum;
+import com.example.project.model.events.ForgotPasswordEvent;
 import com.example.project.model.events.UserRegisteredEvent;
 import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
@@ -38,6 +39,7 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
+
     public void registerUser(UserDTO userDTO) {
 
         UserEntity userEntity = new UserEntity().
@@ -54,6 +56,10 @@ public class UserService {
                 userDTO.getEmail(),
                 userDTO.getUsername()
         ));
+    }
+    public void passwordChangePublish(String email){
+        UserEntity byEmail = userRepository.findByEmail(email).get(); //TODO
+        applicationEventPublisher.publishEvent(new ForgotPasswordEvent("UserService",email,byEmail.getUsername()));
     }
 
     public List<UserDTO> getModerators() {
@@ -95,5 +101,14 @@ public class UserService {
 
     public String getUsernameById(Long id) {
        return userRepository.findById(id).get().getUsername(); //todo
+    }
+
+    public Boolean findEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public void changePassword(String username, String password) {
+        userRepository.save(userRepository.findByUsername(username).get().setPassword(passwordEncoder.encode(password))); //TODO
+
     }
 }
