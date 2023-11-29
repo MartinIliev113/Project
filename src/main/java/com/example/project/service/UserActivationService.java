@@ -43,7 +43,7 @@ public class UserActivationService {
     }
 
     public void cleanUpObsoleteActivationLinks(){
-        //TODO
+        userActivationCodeRepository.deleteAll();
     }
     public String createActivationCode(String userEmail) {
 
