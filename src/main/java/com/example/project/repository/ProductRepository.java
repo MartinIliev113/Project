@@ -21,9 +21,11 @@ public interface ProductRepository extends JpaRepository<ProductEntity,Long>,
     List<ProductEntity> findAllByCategory(CategoryEntity category);
     List<ProductEntity> findAllBySubCategory(SubCategoryEntity byName);
     List<ProductEntity> findAll(Specification<ProductEntity> spec);
+    List<ProductEntity> findAllByOwner(UserEntity userEntity);
 
 
     Page<ProductEntity> findAllByCategory(CategoryEntity category, Pageable pageable);
 
     Page<ProductEntity> findAllBySubCategory(SubCategoryEntity byName, Pageable pageable);
+
 }

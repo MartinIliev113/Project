@@ -7,6 +7,7 @@ import com.example.project.service.ApplicationUserDetailsService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,7 @@ import org.springframework.security.web.context.RequestAttributeSecurityContextR
 import org.springframework.security.web.context.SecurityContextRepository;
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
   @Bean
@@ -31,7 +33,8 @@ public class SecurityConfiguration {
                 authorizeHttpRequests.
                     requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                     .permitAll().
-                    requestMatchers("/", "/users/login", "/users/register", "/users/login-error","/pages/all/","/products/")
+                    requestMatchers("/", "/users/login", "/users/register", "/users/login-error","/pages/all/","/products/",
+                            "/user/activate/**")
                     .permitAll().
                     requestMatchers("/categories/all").hasRole(UserRoleEnum.MODERATOR.name()).
                     requestMatchers("/admin").hasRole(UserRoleEnum.ADMIN.name()).

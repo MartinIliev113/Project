@@ -30,6 +30,7 @@ public class UserEntity  extends BaseEntity{
     return isActive;
   }
 
+
   public UserEntity setActive(boolean active) {
     isActive = active;
     return this;

@@ -1,5 +1,7 @@
 package com.example.project.service;
 
+import com.example.project.model.entity.UserActivationCodeEntity;
+import com.example.project.repository.UserActivationCodeRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.Optional;
+
 
 @Service
 public class EmailService {
@@ -17,7 +21,7 @@ public class EmailService {
     private final String projectEmail;
 
     public EmailService(TemplateEngine templateEngine, JavaMailSender javaMailSender,
-                        @Value("{mail.project}") String projectEmail) {
+                        @Value("{mail.project}") String projectEmail, UserActivationCodeRepository userActivationCodeRepository) {
         this.templateEngine = templateEngine;
         this.javaMailSender = javaMailSender;
         this.projectEmail = projectEmail;
@@ -49,4 +53,5 @@ public class EmailService {
 
         return templateEngine.process("email/registration-email", context);
     }
+
 }

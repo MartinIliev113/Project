@@ -25,19 +25,9 @@ public class AppConfig {
 
         modelMapper.addConverter(localDateTimeToStringConverter);
 
-        // Define TypeMap for ProductEntity to ProductDto
         TypeMap<ProductEntity, ProductDTO> typeMap = modelMapper.createTypeMap(ProductEntity.class, ProductDTO.class);
 
-        // Map LocalDateTime using the custom converter
         typeMap.addMapping(src -> src.getAddedOn(), ProductDTO::setAddedOn);
-
-        // Example usage
-        ProductEntity productEntity = new ProductEntity();
-        productEntity.setAddedOn(LocalDateTime.now());
-
-        ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
-
-        System.out.println(productDTO.getAddedOn());
 
         return modelMapper;
     }

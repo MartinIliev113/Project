@@ -7,12 +7,12 @@ import com.example.project.model.dtos.ProductDTO;
 import com.example.project.model.dtos.SearchProductDTO;
 import com.example.project.service.CategoryService;
 import com.example.project.service.ProductService;
+import com.example.project.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,7 +31,7 @@ public class ProductController {
     private final CategoryService categoryService;
     private final ProductService productService;
 
-    public ProductController(CategoryService categoryService, ProductService productService) {
+    public ProductController(CategoryService categoryService, ProductService productService, UserService userService) {
         this.categoryService = categoryService;
         this.productService = productService;
     }
@@ -155,12 +155,27 @@ public class ProductController {
         return "product-search";
     }
 
-    @PreAuthorize("@productService.isOwner(#id, #principal.username)")
+    @PreAuthorize("@productService.isOwner(#id, #userDetails.username)")
     @DeleteMapping("/{id}")
-    public String removeProduct(@PathVariable Long id){
+    public String removeProduct(@PathVariable Long id,
+                                @AuthenticationPrincipal UserDetails userDetails){
         productService.removeProduct(id);
         return "redirect:/products/all";
     }
+
+
+    @PreAuthorize("@productService.isLoggedUser(#username, #userDetails.username)")
+    @GetMapping("/user-products/{username}")
+    public String userListings(@PathVariable String username, Model model,
+                               @AuthenticationPrincipal UserDetails userDetails) {
+        List<ProductDTO> userProducts = productService.getUserProductsByUsername(username);
+
+        model.addAttribute("username",username);
+        model.addAttribute("userProducts", userProducts);
+
+        return "products-user";
+    }
+
 
 
 }

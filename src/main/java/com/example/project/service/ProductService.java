@@ -205,5 +205,21 @@ public class ProductService {
             productRepository.delete(productEntity);
         }
     }
+
+
+
+    public boolean isLoggedUser(String username,String loggedUserUsername) {
+        UserEntity userEntity = userRepository.findByUsername(loggedUserUsername).get();
+        if(isAdmin(userEntity)){
+            return true;
+        }
+        return username.equals(loggedUserUsername);
+    }
+
+
+    public List<ProductDTO> getUserProductsByUsername(String username) {
+        return productRepository.findAllByOwner(userRepository.findByUsername(username).get())  //TODO
+                .stream().map(productEntity -> modelMapper.map(productEntity,ProductDTO.class)).toList();
+    }
 }
 

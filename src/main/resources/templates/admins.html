@@ -24,6 +24,7 @@
     </div>
     <div class="mb-2 d-flex justify-content-between">
       <a class="text-primary" th:href="@{/admin/{username}(username=*{admin.getUsername()})}">Chane role</a>
+      <a class="text-secondary" th:href="@{/products/user-products/{username}(username=*{admin.getUsername()})}">Listings</a>
       <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
     </div>
   </div>
@@ -43,6 +44,7 @@
     </div>
     <div class="mb-2 d-flex justify-content-between">
       <a class="text-primary" th:href="@{/admin/{username}(username=*{moderator.getUsername()})}">Chane role</a>
+      <a class="text-secondary" th:href="@{/products/user-products/{username}(username=*{moderator.getUsername()})}">Listings</a>
       <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
     </div>
   </div>
@@ -62,6 +64,7 @@
     </div>
     <div class="mb-2 d-flex justify-content-between">
       <a class="text-primary" th:href="@{/admin/{username}(username=*{user.getUsername()})}">Chane role</a>
+      <a class="text-secondary" th:href="@{/products/user-products/{username}(username=*{user.getUsername()})}">Listings</a>
       <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
     </div>
   </div>

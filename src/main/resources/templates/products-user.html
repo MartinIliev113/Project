@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="~{fragments/head}">
+</head>
+
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"> Navbar </div>
+
+
+<div class="container">
+    <h2 class="text-center" th:text="|${username} products|">Products</h2>
+    <div id="productCards" class="row">
+        <div th:each="product : ${userProducts}" class="col-md-4">
+            <div class="card h-100" style="width: 100%; margin-bottom: 5rem;">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h5 class="card-title text-center" th:text="${product.title}"></h5>
+
+                    <img th:src="@{'/images/' + ${product.primaryImageUrl}}"
+                         class="card-img-top" alt="Product Image" style="height: 300px; object-fit: cover;">
+
+
+                    <p class="card-text" style="max-height: 150px; overflow: hidden; text-overflow: ellipsis;"
+                       th:text="${product.description}"></p>
+
+                    <a th:href="@{'/products/details/' + ${product.id}}"
+                       class="btn btn-primary btn-sm">Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

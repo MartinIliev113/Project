@@ -2,6 +2,8 @@ package com.example.project.model.dtos;
 
 
 import com.example.project.model.validation.FileValidation;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,10 +31,13 @@ public class ProductDTO {
         return this;
     }
 
+    @NotBlank
     private String title;
     @Positive
+    @NotNull
     private BigDecimal price;
 
+    @NotBlank
     private String subCategory;
 
     private String category;

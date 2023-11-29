@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import java.util.List;
 
 @Controller
-@CrossOrigin("*")
+@CrossOrigin("*") //todo
 public class PagesController {
 
   private final CategoryService categoryService;

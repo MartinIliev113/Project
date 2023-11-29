@@ -63,7 +63,11 @@ public class UserActivationService {
 
         return activationCode.toString();
     }
-
+    public void activateUser(String activationCode){
+        UserActivationCodeEntity byActivationCode = userActivationCodeRepository.findByActivationCode(activationCode).get(); //TODO
+        byActivationCode.getUser().setActive(true);
+        userRepository.save(byActivationCode.getUser());
+    }
 
 
 }
