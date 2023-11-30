@@ -49,12 +49,13 @@
                 <input type="file"
                        name="images"
                        th:field="*{primaryImage}"
+                       th:errorclass="is-invalid"
                        id="primaryImage"
                        class="form-control-file"
                        aria-describedby="images"
                        multiple>
                 <small id="inputPrimaryImgError"
-                       th:errors="*{images}"
+                       th:errors="*{primaryImage}"
                        class="form-text bg-danger rounded">Must be valid images</small>
             </div>
             <div class="form-group col-md-6">

@@ -2,6 +2,7 @@ package com.example.project.model.dtos;
 
 
 import com.example.project.model.validation.FileValidation;
+import com.example.project.model.validation.MultipleFileValidation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -46,9 +47,10 @@ public class ProductDTO {
     private String ownerUsername;
 
 
-    //@FileValidation(contentTypes = {"image/png", "image/jpeg"},message = "Select an image")
+    @MultipleFileValidation(contentTypes = {"image/png", "image/jpeg"},message = "Select an image")
     private List<MultipartFile> images;
 
+    @FileValidation(contentTypes = {"image/png", "image/jpeg"},message = "Select an image")
     private MultipartFile primaryImage;
     private String primaryImageUrl;
 

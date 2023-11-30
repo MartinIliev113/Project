@@ -33,8 +33,8 @@ public class SecurityConfiguration {
                 authorizeHttpRequests.
                     requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                     .permitAll().
-                    requestMatchers("/", "/users/login", "/users/register", "/users/login-error","/pages/all/","/products/",
-                            "/user/activate/**","/users/forgot-password/**","/user/change-pass/**")
+                    requestMatchers("/", "/users/login", "/users/register", "/users/login-error","/pages/all/","/products/all",
+                            "products","products/search","/user/activate/**","/users/forgot-password/**","/user/change-pass/**")
                     .permitAll().
                     requestMatchers("/categories/all").hasRole(UserRoleEnum.MODERATOR.name()).
                     requestMatchers("/admin").hasRole(UserRoleEnum.ADMIN.name()).
