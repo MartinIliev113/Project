@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,13 +59,13 @@ public class ProductDTO {
     private List<CommentDTO> comments;
     private String owner;
     private boolean viewerIsOwner;
-    private LocalDateTime addedOn;
+    private String addedOn;
 
-    public LocalDateTime getAddedOn() {
+    public String getAddedOn() {
         return addedOn;
     }
 
-    public ProductDTO setAddedOn(LocalDateTime addedOn) {
+    public ProductDTO setAddedOn(String addedOn) {
         this.addedOn = addedOn;
         return this;
     }

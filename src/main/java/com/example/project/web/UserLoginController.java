@@ -39,7 +39,7 @@ public class UserLoginController {
             @ModelAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY) String username,
             RedirectAttributes redirectAttributes) {
 
-        boolean active = !userService.isActive(username);
+        boolean active = userService.isActive(username);
         if (!active) {
             redirectAttributes.addFlashAttribute("inactive", true);
             redirectAttributes.addFlashAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY, username);
