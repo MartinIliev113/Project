@@ -1,11 +1,23 @@
 package com.example.project.model.dtos;
 
+import java.time.LocalDateTime;
+
 public class CommentDTO {
 
     private Long productId;
     private String textContent;
     private String authorUsername;
     private Long id;
+    private LocalDateTime created;
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public CommentDTO setCreated(LocalDateTime created) {
+        this.created = created;
+        return this;
+    }
 
     public Long getId() {
         return id;

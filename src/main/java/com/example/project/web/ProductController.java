@@ -26,7 +26,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("products")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 public class ProductController {
     private final CategoryService categoryService;
     private final ProductService productService;
