@@ -5,6 +5,7 @@ import com.example.project.model.dtos.ProductDTO;
 import com.example.project.model.dtos.SearchProductDTO;
 import com.example.project.model.entity.*;
 import com.example.project.model.enums.UserRoleEnum;
+import com.example.project.model.exceptions.ObjectNotFoundException;
 import com.example.project.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,9 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.example.project.model.exceptions.ExceptionMessages.PRODUCT_NOT_FOUND;
+import static com.example.project.model.exceptions.ExceptionMessages.USER_NOT_FOUND;
 
 @Service
 public class ProductService {
@@ -48,7 +52,7 @@ public class ProductService {
         CategoryEntity category = categoryRepository.findBySubCategoriesContaining(subCategory);
         product.setCategory(category);
         product.setSubCategory(subCategory);
-        product.setOwner(userRepository.findById(userDetails.getId()).get());//TODO FIX
+        product.setOwner(userRepository.findById(userDetails.getId()).orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND)));
         category.getProducts().add(product);
         subCategory.getProducts().add(product);
         product.setAddedOn(LocalDateTime.now());
@@ -105,7 +109,7 @@ public class ProductService {
         ProductEntity productEntity = productRepository.findById(id).get();
         ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
         productDTO.setOwner(productEntity.getOwner().getUsername());
-        if (isOwner(productEntity,viewer.getUsername())) {
+        if (isOwner(productEntity, viewer.getUsername())) {
             productDTO.setViewerIsOwner(true);
         }
         return productDTO;
@@ -128,14 +132,14 @@ public class ProductService {
     }
 
 
-    public Page<ProductDTO> getAllByCategory(String category,Pageable pageable) {
+    public Page<ProductDTO> getAllByCategory(String category, Pageable pageable) {
         return productRepository.findAllByCategory(categoryRepository.findByName(category), pageable)
-                .map(productEntity->modelMapper.map(productEntity,ProductDTO.class));
+                .map(productEntity -> modelMapper.map(productEntity, ProductDTO.class));
     }
 
-    public Page<ProductDTO> getAllBySubCategory(String subCategory,Pageable pageable) {
+    public Page<ProductDTO> getAllBySubCategory(String subCategory, Pageable pageable) {
         return productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory), pageable)
-                .map(productEntity -> modelMapper.map(productEntity,ProductDTO.class));
+                .map(productEntity -> modelMapper.map(productEntity, ProductDTO.class));
     }
 
     public List<ProductDTO> searchOffer(SearchProductDTO searchProductDTO) {
@@ -143,9 +147,11 @@ public class ProductService {
                 .stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class))
                 .toList();
     }
-    public Page<ProductDTO> getAllProducts(Pageable pageable){
-        return productRepository.findAll(pageable).map(productEntity->modelMapper.map(productEntity,ProductDTO.class));
+
+    public Page<ProductDTO> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable).map(productEntity -> modelMapper.map(productEntity, ProductDTO.class));
     }
+
     public boolean isOwner(Long id, String userName) {
         return isOwner(
                 productRepository.findById(id).orElse(null),
@@ -154,18 +160,16 @@ public class ProductService {
     }
 
     private boolean isOwner(ProductEntity productEntity, String username) {
-        if (productEntity == null||username==null) {
-            // anonymous users own no offers
+        if (productEntity == null || username == null) {
             return false;
         }
 
         UserEntity viewerEntity =
                 userRepository
-                        .findByUsername(username)
-                        .orElseThrow(() -> new IllegalArgumentException("Unknown user..."));
+                        .findByUsername(username).
+                        orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND));
 
         if (isAdmin(viewerEntity)) {
-            // all admins own all offers
             return true;
         }
 
@@ -184,10 +188,9 @@ public class ProductService {
 
 
     public void removeProduct(Long id) {
-        // todo
-        ProductEntity productEntity = productRepository.findById(id).orElse(null);
 
-        if (productEntity != null) {
+        ProductEntity productEntity = productRepository.findById(id).orElseThrow(()->new ObjectNotFoundException(PRODUCT_NOT_FOUND));
+
             SubCategoryEntity subCategory = productEntity.getSubCategory();
             subCategory.getProducts().remove(productEntity);
             CategoryEntity category = productEntity.getCategory();
@@ -203,14 +206,12 @@ public class ProductService {
             }
 
             productRepository.delete(productEntity);
-        }
     }
 
 
-
-    public boolean isLoggedUser(String username,String loggedUserUsername) {
-        UserEntity userEntity = userRepository.findByUsername(loggedUserUsername).get();
-        if(isAdmin(userEntity)){
+    public boolean isLoggedUser(String username, String loggedUserUsername) {
+        UserEntity userEntity = userRepository.findByUsername(loggedUserUsername).orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND));
+        if (isAdmin(userEntity)) {
             return true;
         }
         return username.equals(loggedUserUsername);
@@ -218,8 +219,8 @@ public class ProductService {
 
 
     public List<ProductDTO> getUserProductsByUsername(String username) {
-        return productRepository.findAllByOwner(userRepository.findByUsername(username).get())  //TODO
-                .stream().map(productEntity -> modelMapper.map(productEntity,ProductDTO.class)).toList();
+        return productRepository.findAllByOwner(userRepository.findByUsername(username).orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND)))
+                .stream().map(productEntity -> modelMapper.map(productEntity, ProductDTO.class)).toList();
     }
 }
 

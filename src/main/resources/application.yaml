@@ -34,3 +34,5 @@ mail:
   port: 1025
   username: ${MAIL_USER:user}
   password:  ${MAIL_PASS:pass}
+marketplace:
+  remember.me.key: ${REMEMBER_ME_KEY:topsecret}

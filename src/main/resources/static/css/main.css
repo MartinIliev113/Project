@@ -3,7 +3,7 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
-  background-color: #464646;
+  background-color: yellowgreen;
 }
 
 .navbar .logo {
@@ -55,4 +55,8 @@ form.main-form {
 
 .logged-user {
   color: white;
+}
+.custom-card-style {
+  background: linear-gradient(to bottom right, rgba(70, 70, 70, 0.8), rgba(10, 10, 10, 0.8));
+  border-radius: 15px;
 }

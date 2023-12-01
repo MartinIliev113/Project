@@ -4,6 +4,7 @@ package com.example.project.config;
 import com.example.project.model.enums.UserRoleEnum;
 import com.example.project.repository.UserRepository;
 import com.example.project.service.ApplicationUserDetailsService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,15 @@ import org.springframework.security.web.context.SecurityContextRepository;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfiguration {
+
+  private final String rememberMeKey;
+
+  public SecurityConfiguration(@Value("${marketplace.remember.me.key}")
+                               String rememberMeKey) {
+    this.rememberMeKey = rememberMeKey;
+  }
+
+
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http,
@@ -50,7 +60,14 @@ public class SecurityConfiguration {
                         UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY).
                     defaultSuccessUrl("/").
                     failureForwardUrl("/users/login-error")
-        )
+        ).rememberMe(
+                    rememberMe -> {
+                      rememberMe
+                              .key(rememberMeKey)
+                              .rememberMeParameter("rememberme")
+                              .rememberMeCookieName("rememberme");
+                    }
+            )
         .logout((logout) ->
             logout.logoutUrl("/users/logout").
                 logoutSuccessUrl("/").

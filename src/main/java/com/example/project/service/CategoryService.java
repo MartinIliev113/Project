@@ -4,6 +4,7 @@ import com.example.project.model.dtos.CategoryDTO;
 import com.example.project.model.dtos.ProductDTO;
 import com.example.project.model.dtos.SubCategoryDto;
 import com.example.project.model.entity.CategoryEntity;
+import com.example.project.model.exceptions.ObjectNotFoundException;
 import com.example.project.repository.CategoryRepository;
 import com.example.project.repository.SubCategoryRepository;
 import org.modelmapper.ModelMapper;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.project.model.exceptions.ExceptionMessages.CATEGORY_NOT_FOUND;
 
 @Service
 public class CategoryService {
@@ -53,7 +56,7 @@ public class CategoryService {
     }
 
     public String getCategoryName(Long id) {
-        return categoryRepository.findById(id).get().getName();
+        return categoryRepository.findById(id).orElseThrow(()->new ObjectNotFoundException(CATEGORY_NOT_FOUND)).getName();
     }
 
     public List<SubCategoryDto> getAllSubCategories() {

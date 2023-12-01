@@ -4,6 +4,7 @@ import com.example.project.model.entity.UserActivationCodeEntity;
 import com.example.project.model.entity.UserForgotPasswordCodeEntity;
 import com.example.project.model.events.ForgotPasswordEvent;
 import com.example.project.model.events.UserRegisteredEvent;
+import com.example.project.model.exceptions.ObjectNotFoundException;
 import com.example.project.repository.UserActivationCodeRepository;
 import com.example.project.repository.UserForgotPasswordCodeRepository;
 import com.example.project.repository.UserRepository;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Random;
+
+import static com.example.project.model.exceptions.ExceptionMessages.USER_NOT_FOUND;
 
 @Service
 public class UserActivationService {
@@ -52,7 +55,7 @@ public class UserActivationService {
         UserActivationCodeEntity userActivationCodeEntity = new UserActivationCodeEntity();
         userActivationCodeEntity.setActivationCode(activationCode);
         userActivationCodeEntity.setCreated(Instant.now());
-        userActivationCodeEntity.setUser(userRepository.findByEmail(userEmail).get()); //todo
+        userActivationCodeEntity.setUser(userRepository.findByEmail(userEmail).orElseThrow(()->new ObjectNotFoundException(USER_NOT_FOUND)));
 
         userActivationCodeRepository.save(userActivationCodeEntity);
 
@@ -66,7 +69,7 @@ public class UserActivationService {
         UserForgotPasswordCodeEntity userForgotPasswordCodeEntity = new UserForgotPasswordCodeEntity();
         userForgotPasswordCodeEntity.setCode(forgotPasswordCode);
         userForgotPasswordCodeEntity.setCreated(Instant.now());
-        userForgotPasswordCodeEntity.setUser(userRepository.findByEmail(userEmail).get()); //todo
+        userForgotPasswordCodeEntity.setUser(userRepository.findByEmail(userEmail).orElseThrow(()->new ObjectNotFoundException(USER_NOT_FOUND)));
 
         userForgotPasswordCodeRepository.save(userForgotPasswordCodeEntity);
 
@@ -87,13 +90,13 @@ public class UserActivationService {
         return activationCode.toString();
     }
     public void activateUser(String activationCode){
-        UserActivationCodeEntity byActivationCode = userActivationCodeRepository.findByActivationCode(activationCode).get(); //TODO
+        UserActivationCodeEntity byActivationCode = userActivationCodeRepository.findByActivationCode(activationCode).orElseThrow(()->new ObjectNotFoundException(USER_NOT_FOUND));
         byActivationCode.getUser().setActive(true);
         userRepository.save(byActivationCode.getUser());
     }
 
 
     public String getUserNameByForgotPasswordCode(String forgotPasswordCode) {
-        return userForgotPasswordCodeRepository.findByCode(forgotPasswordCode).get().getUser().getUsername(); //TODO
+        return userForgotPasswordCodeRepository.findByCode(forgotPasswordCode).orElseThrow(()->new ObjectNotFoundException(USER_NOT_FOUND)).getUser().getUsername();
     }
 }

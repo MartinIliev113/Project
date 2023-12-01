@@ -8,6 +8,7 @@ import com.example.project.model.entity.UserRoleEntity;
 import com.example.project.model.enums.UserRoleEnum;
 import com.example.project.model.events.ForgotPasswordEvent;
 import com.example.project.model.events.UserRegisteredEvent;
+import com.example.project.model.exceptions.ObjectNotFoundException;
 import com.example.project.repository.RoleRepository;
 import com.example.project.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.project.model.exceptions.ExceptionMessages.USER_NOT_FOUND;
 
 @Service
 public class UserService {
@@ -57,10 +60,13 @@ public class UserService {
                 userDTO.getUsername()
         ));
     }
-    public void passwordChangePublish(String email){
-        UserEntity byEmail = userRepository.findByEmail(email).get(); //TODO
-        applicationEventPublisher.publishEvent(new ForgotPasswordEvent("UserService",email,byEmail.getUsername()));
+    public void passwordChangePublish(String email) {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND));
+
+        applicationEventPublisher.publishEvent(new ForgotPasswordEvent("UserService", email, user.getUsername()));
     }
+
 
     public List<UserDTO> getModerators() {
         List<UserEntity> moderatosList = userRepository.findByRolesContainingAndRolesNotContaining(roleRepository.findByRole(UserRoleEnum.valueOf("MODERATOR")),
@@ -77,12 +83,20 @@ public class UserService {
     }
 
     public UserDTO findByUsername(String username) {
-        return modelMapper.map(userRepository.findByUsername(username).get(),UserDTO.class);
+        return modelMapper.map(userRepository.findByUsername(username)
+                        .orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND)),
+                UserDTO.class);
     }
 
     public void changeRole(UserRoleDto userRoleDto, String username) {
-        //todo
-        UserEntity user = userRepository.findByUsername(username).get();
+
+        UserEntity user;
+        if(userRepository.findByUsername(username).isEmpty()){
+            throw new ObjectNotFoundException(USER_NOT_FOUND);
+        }else {
+             user = userRepository.findByUsername(username).get();
+        }
+
         if (!userRoleDto.getRoleName().equals("ADMIN") && !userRoleDto.getRoleName().equals("MODERATOR")) {
             user.getRoles().clear();
         } else {
@@ -108,7 +122,16 @@ public class UserService {
     }
 
     public void changePassword(String username, String password) {
-        userRepository.save(userRepository.findByUsername(username).get().setPassword(passwordEncoder.encode(password))); //TODO
+        userRepository.findByUsername(username)
+                .map(user -> {
+                    user.setPassword(passwordEncoder.encode(password));
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND));
+    }
 
+    public boolean isActive(String username) {
+        Optional<UserEntity> user = userRepository.findByUsername(username);
+        return user.map(userEntity -> !userEntity.isActive()).orElse(true);
     }
 }
