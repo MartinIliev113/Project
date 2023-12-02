@@ -61,7 +61,7 @@
         <div th:unless="${#lists.size(productDTO.comments) == 0}" class="comments">
             <div class="form-group" th:each="comment : ${productDTO.comments}">
                 <h4 th:text="${comment.textContent}">Leave a comment</h4>
-                <label th:text="${comment.getAuthorUsername()}">Message</label>
+                <label th:text="|${comment.getAuthorUsername()} ${#temporals.format(comment.created, 'HH:mm dd/MM/yyyy')}|">Message</label>
                 <div>
                     <form th:method="DELETE" th:action="@{/comments/{id}/{productId}(id=${comment.id}, productId=${productDTO.id})}">
                         <!-- TODO MAKE USER BE ABLE TO DELETE HIS OWN COMMENT -->

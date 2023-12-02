@@ -35,7 +35,7 @@ public class PagesController {
       model.addAttribute("fullName", appUserDetails.getFullName());
     }
 
-    return "index";
+    return "redirect:/products/all";
   }
 
 }

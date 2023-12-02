@@ -56,6 +56,6 @@ public class UserRegistrationController {
     @GetMapping("/user/activate")
     public String activateUser(@RequestParam("activation_code") String activationCode) {
         userActivationService.activateUser(activationCode);
-        return "index";
+        return "redirect:/products/all";
     }
 }
