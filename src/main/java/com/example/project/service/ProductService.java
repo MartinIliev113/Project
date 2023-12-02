@@ -106,10 +106,13 @@ public class ProductService {
 //    }
 
     public ProductDTO getProductById(Long id, UserDetails viewer) {
-        ProductEntity productEntity = productRepository.findById(id).get();
+        ProductEntity productEntity = productRepository.findById(id).orElseThrow(()->new ObjectNotFoundException(PRODUCT_NOT_FOUND));
         ProductDTO productDTO = modelMapper.map(productEntity, ProductDTO.class);
         productDTO.setOwner(productEntity.getOwner().getUsername());
-        if (isOwner(productEntity, viewer.getUsername())) {
+        if(viewer==null){
+            productDTO.setViewerIsOwner(false);
+        }
+        else  if (isOwner(productEntity, viewer.getUsername())) {
             productDTO.setViewerIsOwner(true);
         }
         return productDTO;

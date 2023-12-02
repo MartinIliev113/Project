@@ -1,34 +1,29 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="~{fragments/head}">
-</head>
 
-<div th:replace="~{fragments/navbar :: navbar}"> Navbar </div>
+</head>
 
 <body>
 
-<div class="container-fluid">
-    <div class="card-body" th:if="${productDTO.viewerIsOwner}">
-        <form th:method="delete"
-              th:action="@{/products/{id}(id=${productDTO.getId()})}">
-            <input type="submit" value="Delete" class="link card-link"/>
-        </form>
-    </div>
+<div th:replace="~{fragments/navbar :: navbar}"> Navbar </div>
+
+<div class="container-fluid mt-4">
     <div class="row">
         <!-- Left Column -->
         <div class="col-md-4">
-            <h2 th:text="${productDTO.title}" class="text-center mb-4 text-center mb-4 "></h2>
-            <div id="productCarousel" class="carousel slide" data-ride="carousel" style="margin-left: 130px; margin-bottom: 20px;">
+            <h2 th:text="${productDTO.title}" class="text-center mb-4"></h2>
+            <div id="productCarousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     <div th:classappend="'carousel-item active'">
                         <div class="d-flex justify-content-center align-items-center">
-                            <img th:src="@{'/images/' + ${productDTO.primaryImageUrl}}" class="d-block w-100" style="max-height: 300px;" alt="Primary Image">
+                            <img th:src="@{'/images/' + ${productDTO.primaryImageUrl}}" class="d-block w-100" style="max-height: 380px;" alt="Primary Image">
                         </div>
                     </div>
 
                     <div th:each="image : ${productDTO.imageUrls}" th:classappend="'carousel-item'">
                         <div class="d-flex justify-content-center align-items-center">
-                            <img th:src="@{'/images/' + ${image}}" class="d-block w-100" style="max-height: 300px;" alt="Product Image">
+                            <img th:src="@{'/images/' + ${image}}" class="d-block w-100" style="max-height: 380px;" alt="Product Image">
                         </div>
                     </div>
                 </div>
@@ -45,65 +40,59 @@
 
         <!-- Right Column -->
         <div class="col-md-6">
-            <p th:text="${productDTO.description}" style="margin-top: 80px;"></p>
+            <p th:text="${productDTO.description}" style="margin-top: 80px; height: 230px"></p>
             <p th:text="'Price: $' + ${productDTO.price}"></p>
-            <p th:text="'Added on: ' + ${productDTO.addedOn}"></p>
-            <div class="card-text"><span>• Seller</span>
+            <p>
+                <span th:text="'Added on: ' + ${#temporals.format(productDTO.addedOn, 'HH:mm dd/MM/yyyy')}"></span>
+            </p>
+            <div class="card-text"><span> Seller</span>
                 <th:block th:text="${productDTO.owner}">Pesho Petrov</th:block>
             </div>
         </div>
+        <div class="card-body" th:if="${productDTO.viewerIsOwner}">
+            <form th:method="delete" th:action="@{/products/{id}(id=${productDTO.getId()})}">
+                <input type="submit" value="Delete product" class="link card-link"/>
+            </form>
+        </div>
     </div>
 
-
-
-
-    <section class="comments">
+    <section class="comments mt-4">
         <h1>Comments</h1>
         <div th:unless="${#lists.size(productDTO.comments) == 0}" class="comments">
             <div class="form-group" th:each="comment : ${productDTO.comments}">
                 <h4 th:text="${comment.textContent}">Leave a comment</h4>
-                <label th:text="${comment.authorUsername == null ? 'Anonymous' : comment.getAuthorUsername()}">Message</label>
+                <label th:text="${comment.getAuthorUsername()}">Message</label>
                 <div>
-                    <!--                    <form th:unless="${comment.approved}" th:method="PATCH" th:action="@{/comments/{id}/approve/{routeId}(id=${comment.id}, routeId=${route.id})}">-->
-                    <!--                        <button class="btn btn-success" type="submit" th:text="'Approve'"></button>-->
-                    <!--                    </form>-->
-                    <form  th:method="DELETE" th:action="@{/comments/{id}/{productId}(id=${comment.id}, productId=${productDTO.id})}">
-                        <!--                        TODO MAKE USER BE ABLE TO DELETE HIS OWN COMMENT-->
-                        <button class="btn btn-danger" type="submit" th:text="'Delete'" sec:authorize="hasRole('MODERATOR')" ></button>
+                    <form th:method="DELETE" th:action="@{/comments/{id}/{productId}(id=${comment.id}, productId=${productDTO.id})}">
+                        <!-- TODO MAKE USER BE ABLE TO DELETE HIS OWN COMMENT -->
+                        <button class="btn btn-danger" type="submit" th:text="'Delete'" sec:authorize="hasRole('MODERATOR')"></button>
                     </form>
                 </div>
             </div>
         </div>
-        <div>
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
             <!-- Comments submission -->
-            <form id="commentForm" th:method="POST" th:object="${commentDTO}"
-                  th:action="@{/comments/create}">
+            <form id="commentForm" th:method="POST" th:object="${commentDTO}" th:action="@{/comments/create}">
                 <input type="hidden" name=productId th:value="${productDTO.id}">
                 <input type="hidden" name="authorUsername" th:value="${#authentication.principal.fullName}">
                 <div class="form-group">
                     <h4>Leave a comment</h4>
                     <label for="message">Message</label>
-                    <textarea name="textContent"
-                              th:field="*{textContent}"
-                              id="message"
-                              cols="30"
-                              rows="5"
-                              class="form-control"
-                              style="background-color: white;"></textarea>
-                    <small id="messageError" class="invalid-feedback">
-                        Message should be at least 10 characters.
-                    </small>
+                    <textarea name="textContent" th:field="*{textContent}" id="message" cols="30" rows="5"
+                              class="form-control" style="background-color: white;"></textarea>
+                    <small id="messageError" class="invalid-feedback">Message should be at least 10 characters.</small>
                 </div>
-
                 <div class="form-group">
-                    <input type="submit"
-                           class="btn"
-                           id="postComment"
-                           value="Post Comment"/>
+                    <input type="submit" class="btn btn-primary" id="postComment" value="Post Comment"/>
                 </div>
             </form>
             <!-- Comments submission -->
         </div>
+        <div th:unless="${#authorization.expression('isAuthenticated')}">
+            <p>Please <a th:href="@{/login}">log in</a> to post a comment.</p>
+        </div>
+    </section>
+
 </div>
 
 </body>

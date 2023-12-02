@@ -44,7 +44,8 @@ public class SecurityConfiguration {
                     requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                     .permitAll().
                     requestMatchers("/", "/users/login", "/users/register", "/users/login-error","/pages/all/","/products/all",
-                            "products","products/search","/user/activate/**","/users/forgot-password/**","/user/change-pass/**")
+                            "products","products/search","/user/activate/**","/users/forgot-password/**","/user/change-pass/**"
+                    ,"/products/details/**")
                     .permitAll().
                     requestMatchers("/categories/all").hasRole(UserRoleEnum.MODERATOR.name()).
                     requestMatchers("/admin").hasRole(UserRoleEnum.ADMIN.name()).

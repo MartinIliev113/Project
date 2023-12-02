@@ -132,6 +132,6 @@ public class UserService {
 
     public boolean isActive(String username) {
         Optional<UserEntity> user = userRepository.findByUsername(username);
-        return user.map(userEntity -> !userEntity.isActive()).orElse(true);
+        return user.map(UserEntity::isActive).orElse(true);
     }
 }
