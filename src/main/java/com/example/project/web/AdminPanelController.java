@@ -40,7 +40,6 @@ public class AdminPanelController {
 
     @GetMapping
     public String admin(){
-        moderators();
         System.out.println();
         return "admins";
     }

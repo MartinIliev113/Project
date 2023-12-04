@@ -45,7 +45,7 @@ public class ProductEntity extends BaseEntity {
     @ManyToOne
     private SubCategoryEntity subCategory;
 
-    @Column(columnDefinition = "TEXT")
+
     private String description;
 
     @ManyToOne

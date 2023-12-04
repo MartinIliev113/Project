@@ -13,7 +13,7 @@ public class CommentEntity extends BaseEntity {
     @Column(name = "created")
     private LocalDateTime created;
 
-    @Column(name = "text_content", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "text_content", nullable = false)
     private String textContent;
 
     @ManyToOne

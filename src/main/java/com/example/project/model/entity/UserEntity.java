@@ -11,6 +11,10 @@ import java.util.List;
 public class UserEntity  extends BaseEntity{
 
 
+  public UserEntity() {
+    roles=new ArrayList<>();
+  }
+
   @Column(nullable = false,name = "user_name")
   private String username;
   @Column(nullable = false)
@@ -23,7 +27,7 @@ public class UserEntity  extends BaseEntity{
   private String password;
 
   @ManyToMany(fetch = FetchType.EAGER)
-  private List<UserRoleEntity> roles = new ArrayList<>();
+  private List<UserRoleEntity> roles;
   boolean isActive;
 
   public boolean isActive() {

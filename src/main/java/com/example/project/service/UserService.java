@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -94,7 +95,9 @@ public class UserService {
         if(userRepository.findByUsername(username).isEmpty()){
             throw new ObjectNotFoundException(USER_NOT_FOUND);
         }else {
-             user = userRepository.findByUsername(username).get();
+             user = userRepository.findByUsername(username).orElseThrow(()->new ObjectNotFoundException(USER_NOT_FOUND));
+           //  user.getRoles().clear();
+            user.setRoles(new ArrayList<>());
         }
 
         if (!userRoleDto.getRoleName().equals("ADMIN") && !userRoleDto.getRoleName().equals("MODERATOR")) {
@@ -111,10 +114,6 @@ public class UserService {
             }
         }
         userRepository.save(user);
-    }
-
-    public String getUsernameById(Long id) {
-       return userRepository.findById(id).get().getUsername(); //todo
     }
 
     public Boolean findEmail(String email) {
