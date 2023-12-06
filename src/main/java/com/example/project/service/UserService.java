@@ -122,10 +122,11 @@ public class UserService {
 
     public void changePassword(String username, String password) {
         userRepository.findByUsername(username)
-                .map(user -> {
+                .ifPresent(user -> {
                     user.setPassword(passwordEncoder.encode(password));
-                    return userRepository.save(user);
-                })
+                    userRepository.save(user);
+                });
+        userRepository.findByUsername(username)
                 .orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND));
     }
 

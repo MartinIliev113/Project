@@ -21,10 +21,12 @@
                 <span th:text="|Product: ${#lists.size(subcategory.getProducts())}|" style="display: inline-block;">Products:</span>
             </div>
             <div class="mb-2 d-flex justify-content-between">
-                <a></a>
-                <a class="text-danger"
-                   href="#"
-                   style="display: inline-block;">Remove</a>
+                <form th:action="@{/subcategories/{categoryId}/{subcategory}(categoryId=${categoryId},subcategory=*{subcategory.getName()})}" th:method="delete" style="display: inline-block;">
+                    <input type="hidden" name="username" th:value="${subcategory.getName()}" />
+                    <button type="submit" class="text-danger" style="background-color: transparent; border: none; padding: 0; margin: 0;">
+                        Remove
+                    </button>
+                </form>
             </div>
         </div>
     </div>

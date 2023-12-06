@@ -19,7 +19,12 @@
             </div>
             <div class="mb-2 d-flex justify-content-between">
                 <a class="text-primary" th:href="@{/subcategories/{id}(id=*{category.getId()})}">Subcategories</a>
-                <a class="text-danger" th:href="@{/product/remove-category/{id}(id=*{category.getId()})}" style="display: inline-block;">Remove</a>
+                <form th:action="@{/categories/{category}(category=*{category.getName()})}" th:method="delete" style="display: inline-block;">
+                    <input type="hidden" name="username" th:value="${category.getName()}" />
+                    <button type="submit" class="text-danger" style="background-color: transparent; border: none; padding: 0; margin: 0;">
+                        Remove
+                    </button>
+                </form>
             </div>
         </div>
     </div>

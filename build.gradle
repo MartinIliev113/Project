@@ -24,7 +24,8 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
-	runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    runtimeOnly 'com.mysql:mysql-connector-j'
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.1'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	testImplementation 'org.hsqldb:hsqldb'
@@ -34,7 +35,3 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
-
-//tasks.named('test') {
-//	useJUnitPlatform()
-//}

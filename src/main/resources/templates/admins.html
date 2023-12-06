@@ -25,7 +25,13 @@
     <div class="mb-2 d-flex justify-content-between">
       <a class="text-primary" th:href="@{/admin/{username}(username=*{admin.getUsername()})}">Chane role</a>
       <a class="text-secondary" th:href="@{/products/user-products/{username}(username=*{admin.getUsername()})}">Listings</a>
-      <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
+      <form th:action="@{/admin/{username}(username=*{admin.getUsername()})}" th:method="delete" style="display: inline-block;">
+        <input type="hidden" name="username" th:value="${admin.getUsername()}" />
+        <button type="submit" class="text-danger" style="background-color: transparent; border: none; padding: 0; margin: 0;">
+          Remove
+        </button>
+      </form>
+
     </div>
   </div>
 </div>
@@ -45,7 +51,13 @@
     <div class="mb-2 d-flex justify-content-between">
       <a class="text-primary" th:href="@{/admin/{username}(username=*{moderator.getUsername()})}">Chane role</a>
       <a class="text-secondary" th:href="@{/products/user-products/{username}(username=*{moderator.getUsername()})}">Listings</a>
-      <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
+      <form th:action="@{/admin/{username}(username=*{moderator.getUsername()})}" th:method="delete" style="display: inline-block;">
+        <input type="hidden" name="username" th:value="${moderator.getUsername()}" />
+        <button type="submit" class="text-danger" style="background-color: transparent; border: none; padding: 0; margin: 0;">
+          Remove
+        </button>
+      </form>
+
     </div>
   </div>
 
@@ -65,7 +77,14 @@
     <div class="mb-2 d-flex justify-content-between">
       <a class="text-primary" th:href="@{/admin/{username}(username=*{user.getUsername()})}">Chane role</a>
       <a class="text-secondary" th:href="@{/products/user-products/{username}(username=*{user.getUsername()})}">Listings</a>
-      <a class="text-danger" href="#" style="display: inline-block;">Remove</a>
+      <form th:action="@{/admin/{username}(username=*{user.getUsername()})}" th:method="delete" style="display: inline-block;">
+        <input type="hidden" name="username" th:value="${user.getUsername()}" />
+        <button type="submit" class="text-danger" style="background-color: transparent; border: none; padding: 0; margin: 0;">
+          Remove
+        </button>
+      </form>
+
+
     </div>
   </div>
 

@@ -42,7 +42,7 @@ class ApplicationUserDetailsServiceTest {
     }
 
     @Test
-    void testUserFoundException() {
+    void testUserFound() {
         UserEntity testUserEntity = createTestAdmin();
         when(mockUserRepository.findByUsername(testUserEntity.getUsername()))
                 .thenReturn(Optional.of(testUserEntity));

@@ -5,6 +5,7 @@ import com.example.project.model.enums.UserRoleEnum;
 import com.example.project.repository.CategoryRepository;
 import com.example.project.repository.ProductRepository;
 import com.example.project.repository.SubCategoryRepository;
+import com.example.project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,8 @@ public class TestDataUtil {
     private CategoryRepository categoryRepository;
     @Autowired
     private SubCategoryRepository subCategoryRepository;
+    @Autowired
+    private   UserRepository userRepository;
 
     public ProductEntity createTestProduct(UserEntity owner){
         SubCategoryEntity subCategory=subCategoryRepository.save(
@@ -61,9 +64,11 @@ public class TestDataUtil {
                         new UserRoleEntity().setRole(UserRoleEnum.MODERATOR)))
                 .setPassword("123456");
     }
-    public static UserEntity createTestUser() {
-        return new UserEntity().setFirstName("firstName").setLastName("lastName")
+    public UserEntity createTestUser() {
+        UserEntity userEntity = new UserEntity().setFirstName("firstName").setLastName("lastName")
                 .setEmail("test@qbvb.bg").setUsername("test").setActive(true)
                 .setPassword("123456");
+        userRepository.save(userEntity);
+        return userEntity;
     }
 }
