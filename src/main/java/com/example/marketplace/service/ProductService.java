@@ -141,8 +141,9 @@ public class ProductService {
     }
 
     public Page<ProductDTO> getAllBySubCategory(String subCategory, Pageable pageable) {
-        return productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory)
-                        .orElseThrow(()->new ObjectNotFoundException(CATEGORY_NOT_FOUND)), pageable)
+        return productRepository.findAllBySubCategory(subCategoryRepository.findByName(subCategory).get(),
+//                        .orElseThrow(()->new ObjectNotFoundException(CATEGORY_NOT_FOUND)),
+                        pageable)
                 .map(productEntity -> modelMapper.map(productEntity, ProductDTO.class));
     }
 

@@ -50,19 +50,34 @@ public class InitService {
         if (categoryRepository.count() == 0) {
             var technologyCategory = new CategoryEntity().setName("Technology");
             var clothesCategory = new CategoryEntity().setName("Clothes");
-            var carsCategory = new CategoryEntity().setName("Cars");
-            var vwSubCategory = new SubCategoryEntity().setName("VW");
-            var computerSubCategory = new SubCategoryEntity().setName("COMPUTER");
-            var tShirtSubCategory = new SubCategoryEntity().setName("TSHIRT");
-            technologyCategory.getSubCategories().add(vwSubCategory);
-            carsCategory.getSubCategories().add(computerSubCategory);
+            var vehiclesCategory = new CategoryEntity().setName("Vehicles");
+            var carsSubCategory = new SubCategoryEntity().setName("Cars");
+            var trucksSubCategory = new SubCategoryEntity().setName("Trucks");
+            var motorBikesSubCategory = new SubCategoryEntity().setName("MotorBikes");
+            var tShirtSubCategory = new SubCategoryEntity().setName("TShirts");
+            var dressesSubCategory = new SubCategoryEntity().setName("Dresses");
+            var jacketsSubCategory = new SubCategoryEntity().setName("Jackets");
+            var shoesSubCategory = new SubCategoryEntity().setName("Shoes");
+            var computersSubCategory = new SubCategoryEntity().setName("Computers");
+            var laptopsSubCategory = new SubCategoryEntity().setName("Laptops");
+            var camerasSubCategory = new SubCategoryEntity().setName("Cameras");
+            technologyCategory.getSubCategories().add(computersSubCategory);
+            technologyCategory.getSubCategories().add(laptopsSubCategory);
+            technologyCategory.getSubCategories().add(camerasSubCategory);
             clothesCategory.getSubCategories().add(tShirtSubCategory);
-            subCategoryRepository.save(vwSubCategory);
-            subCategoryRepository.save(computerSubCategory);
-            subCategoryRepository.save(tShirtSubCategory);
+            clothesCategory.getSubCategories().add(dressesSubCategory);
+            clothesCategory.getSubCategories().add(jacketsSubCategory);
+            clothesCategory.getSubCategories().add(shoesSubCategory);
+            vehiclesCategory.getSubCategories().add(carsSubCategory);
+            vehiclesCategory.getSubCategories().add(trucksSubCategory);
+            vehiclesCategory.getSubCategories().add(motorBikesSubCategory);
+
+            subCategoryRepository.saveAll(vehiclesCategory.getSubCategories());
+            subCategoryRepository.saveAll(technologyCategory.getSubCategories());
+            subCategoryRepository.saveAll(clothesCategory.getSubCategories());
             categoryRepository.save(technologyCategory);
             categoryRepository.save(clothesCategory);
-            categoryRepository.save(carsCategory);
+            categoryRepository.save(vehiclesCategory);
         }
     }
 
@@ -86,7 +101,7 @@ public class InitService {
 
     private void initAdmin() {
         var adminUser = new UserEntity().
-                setUsername("Admincho").
+                setUsername("Admin").
                 setEmail("admin@example.com").
                 setFirstName("Admin").
                 setLastName("Adminov").
@@ -103,7 +118,7 @@ public class InitService {
                 findUserRoleEntityByRole(UserRoleEnum.MODERATOR).orElseThrow();
 
         var moderatorUser = new UserEntity().
-                setUsername("Mdderatorcho").
+                setUsername("Moderator").
                 setEmail("moderator@example.com").
                 setFirstName("Moderator").
                 setLastName("Moderatorov").
@@ -117,7 +132,7 @@ public class InitService {
     private void initNormalUser() {
 
         var normalUser = new UserEntity().
-                setUsername("Usercho").
+                setUsername("User").
                 setEmail("user@example.com").
                 setFirstName("User").
                 setLastName("Userov").

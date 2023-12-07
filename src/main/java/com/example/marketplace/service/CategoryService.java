@@ -67,8 +67,7 @@ public class CategoryService {
     }
 
     public boolean checkCategory(String category) {
-        categoryRepository.findByName(category).orElseThrow(()->new ObjectNotFoundException(CATEGORY_NOT_FOUND));
-        return true;
+        return categoryRepository.findByName(category).isPresent();
     }
 
     public void deleteCategory(String categoryName) {

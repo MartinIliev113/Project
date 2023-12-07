@@ -9,6 +9,16 @@ public class CommentDTO {
     private String authorUsername;
     private Long id;
     private LocalDateTime created;
+    private boolean viewerIsAuthor;
+
+    public boolean isViewerIsAuthor() {
+        return viewerIsAuthor;
+    }
+
+    public CommentDTO setViewerIsAuthor(boolean viewerIsAuthor) {
+        this.viewerIsAuthor = viewerIsAuthor;
+        return this;
+    }
 
     public LocalDateTime getCreated() {
         return created;
