@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head th:replace="~{fragments/head::head}"></head>
+
+<body>
+<div th:replace="~{fragments/navbar :: navbar}">
+    Navbar
+</div>
+
+<main style="margin-top: 100px;">
+    <div class="text-center">
+        <h1 class="text-warning" th:text="|Change role for ${username}|">username</h1>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <form th:method="POST" th:action="@{/admin/{username}(username=${username})}" th:object="${userRoleDto}">
+            <select id="roleName" name="roleName" th:field="*{roleName}">
+                <option th:value="USER">USER</option>
+                <option th:value="MODERATOR">MODERATOR</option>
+                <option th:value="ADMIN">ADMIN</option>
+            </select>
+            <button type="submit" class="btn btn-primary">
+                Change role
+            </button>
+        </form>
+    </div>
+</main>
+</body>
+
+</html>

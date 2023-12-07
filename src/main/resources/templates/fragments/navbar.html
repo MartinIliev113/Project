@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+
+<div th:fragment="navbar">
+
+  <nav class="navbar navbar-expand-lg bg-dark navbar-dark fixed-top">
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto col-12 justify-content-between">
+        <li class="nav-item" >
+          <a class="nav-link" th:text="#{navbar_products}" th:href="@{/products/all}">Products</a>
+        </li>
+        <li class="nav-item" >
+          <a class="nav-link" th:text="#{navbar_search}" th:href="@{/products/search}">Search</a>
+        </li>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <a class="nav-link" th:text="#{navbar_addProduct}" th:href="@{/products/add}">Add Products</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('MODERATOR')">
+          <a class="nav-link" th:text="#{navbar_categories}" th:href="@{/categories}">Categories</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+          <a class="nav-link" th:text="#{navbar_adminPanel}" th:href="@{/admin}">Admin panel</a>
+        </li>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <a class="nav-link" th:text="#{navbar_profile}" th:href="@{/my-profile}">Profile</a>
+        </li>
+
+        <!-- Logout start -->
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+          <div class="form-inline my-2 my-lg-0 px-3">
+            <div class="logged-user">
+              Welcome, <th:block sec:authentication="name"></th:block>!
+            </div>
+            <form th:method="post" th:action="@{/users/logout}">
+              <input class="btn btn-link nav-link" type="submit" th:value="#{navbar_logout}">
+            </form>
+          </div>
+        </li>
+
+        <!-- EO: Logout start -->
+
+        <li class="nav-item" sec:authorize="!isAuthenticated()">
+          <a class="nav-link" th:text="#{navbar_register}" th:href="@{/users/register}">Register</a>
+        </li>
+        <li class="nav-item" sec:authorize="!isAuthenticated()">
+          <a class="nav-link" th:text="#{navbar_login}" th:href="@{/users/login}">Login</a>
+        </li>
+
+        <!-- Language selection using images -->
+        <!-- Language selection using images -->
+        <li class="nav-item">
+          <form id="languageForm" th:method="get" class="d-flex">
+            <label class="text-white mr-2" th:text="#{navbar_language}" th:for="lang"></label>
+
+            <!-- English flag -->
+            <a class="language-option" href="javascript:void(0)" onclick="changeLanguage('en_US')">
+              <img src="/images/en_flag.png" alt="English" style="width: 20px; height: 20px;">
+            </a>
+
+            <!-- Bulgarian flag -->
+            <a class="ml-2 language-option" href="javascript:void(0)" onclick="changeLanguage('bg_BG')">
+              <img src="/images/bg_flag.png" alt="Български" style="width: 20px; height: 20px;">
+            </a>
+
+            <input type="hidden" id="selectedLanguage" name="lang" th:value="${#locale.toString()}">
+          </form>
+        </li>
+
+        <script>
+          function changeLanguage(language) {
+            document.getElementById('selectedLanguage').value = language;
+            document.getElementById('languageForm').submit();
+          }
+        </script>
+
+
+
+      </ul>
+    </div>
+  </nav>
+
+</div>
+
+</body>
+</html>

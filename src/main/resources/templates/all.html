@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/head::head"></head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"> Navbar </div>
+
+<div class="container">
+  <div class="form-group col-md-6 mb-3 mx-auto">
+    <form id="searchForm" class="text-center">
+      <label  th:text="#{all_search_category}" class="text-white font-weight-bold" for="category">Search by category</label>
+      <select id="category" name="category" class="form-control">
+        <option th:text="#{all_select_category}" value="" selected>- Select category -</option>
+        <optgroup th:each="categorie : ${categories}" th:label="${categorie.getName()}">
+          <option th:text="|All from ${categorie.getName()}|" th:value="${categorie.getName()}"></option>
+          <option th:each="subCategory : ${categorie.getSubCategories()}"
+                  th:text="${subCategory.getName()}"
+                  th:value="${subCategory.getName()}">Model
+          </option>
+        </optgroup>
+      </select>
+      <label th:text="#{all_sort_by}" class="text-white font-weight-bold" for="sort">Sort by</label>
+      <select id="sort" name="sort" class="form-control">
+        <option th:text="#{all_sort_by_addedOn}" value="addedOn">Added On</option>
+        <option  th:text="#{all_sort_by_price}" value="price">Price</option>
+      </select>
+
+      <p class="invalid-feedback errors alert alert-danger" th:text="#{all_category_required}"> Category is required. </p>
+      <button type="button" onclick="fetchProducts(0)" class="btn btn-primary mt-2">Search</button>
+    </form>
+  </div>
+</div>
+
+<div class="container">
+  <h1 id="listingsTitle" class="text-center text-info">ALL LISTINGS</h1>
+</div>
+
+<div class="container">
+  <div id="productCards" class="row">
+  </div>
+</div>
+
+<div class="container">
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" id="prevPage">
+        <a class="page-link" href="#" onclick="fetchProducts(currentPage - 1)" tabindex="-1" aria-disabled="true">Previous</a>
+      </li>
+      <li class="page-item" id="nextPage">
+        <a class="page-link" href="#" onclick="fetchProducts(currentPage + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<style>
+  /* Add a margin below each card */
+  .card {
+    margin-bottom: 20px;
+  }
+
+  /* Center the title */
+  .card-title {
+    text-align: center;
+  }
+</style>
+
+<script>
+  let currentPage = 0;
+
+  // Fetch products on page load
+  document.addEventListener('DOMContentLoaded', function () {
+    fetchProducts(currentPage);
+  });
+
+  function fetchProducts(page) {
+    let category = document.getElementById('category').value;
+    let sort = document.getElementById('sort').value; // Get the selected sort option
+    let url = category ? `/products/${category}?page=${page}&sort=${sort}` : `/products?page=${page}&sort=${sort}`;
+
+    fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then(data => {
+              const products = data.content;
+
+              const productContainer = document.getElementById('productCards');
+              productContainer.innerHTML = '';
+
+              products.forEach(product => {
+                const cardColumn = document.createElement('div');
+                cardColumn.className = 'col-md-4';
+                cardColumn.style.marginBottom = '30px';
+
+                const card = document.createElement('div');
+                card.className = 'card h-100';
+                card.style.width = '100%';
+                card.style.marginBottom = '5rem';
+
+                const cardImage = document.createElement('img');
+                product.primaryImageUrl = "/images/" + product.primaryImageUrl;
+                cardImage.src = product.primaryImageUrl;
+                cardImage.className = 'card-img-top';
+                cardImage.alt = 'Product Image';
+
+                const cardBody = document.createElement('div');
+                cardBody.className = 'card-body d-flex flex-column justify-content-between';
+
+                const cardTitle = document.createElement('h5');
+                cardTitle.className = 'card-title';
+                cardTitle.textContent = product.title;
+
+                cardTitle.style.textAlign = 'center';
+
+                const cardText = document.createElement('p');
+                cardText.className = 'card-text';
+                cardText.textContent = product.description;
+
+                cardText.style.maxHeight = '150px';
+                cardText.style.overflow = 'hidden';
+                cardText.style.textOverflow = 'ellipsis';
+
+                const button = document.createElement('a');
+                button.href = '/products/details/' + product.id;
+                button.className = 'btn btn-primary btn-sm';
+                button.textContent = 'Details';
+
+                cardBody.appendChild(cardTitle);
+                cardBody.appendChild(cardImage);
+                cardBody.appendChild(cardText);
+                cardBody.appendChild(button);
+
+                card.appendChild(cardBody);
+                cardColumn.appendChild(card);
+                productContainer.appendChild(cardColumn);
+                productContainer.appendChild(document.createElement("br"));
+              });
+
+              updateTitle(category);
+
+
+              const prevPage = document.getElementById('prevPage');
+              const nextPage = document.getElementById('nextPage');
+
+              prevPage.classList.toggle('disabled', data.first);
+              nextPage.classList.toggle('disabled', data.last);
+
+              currentPage = data.number;
+            })
+            .catch(error => console.error('Error fetching products:', error));
+  }
+
+  function updateTitle(category) {
+    const titleElement = document.getElementById('listingsTitle');
+    if (category) {
+      titleElement.textContent = category.toUpperCase() + ' LISTINGS';
+    } else {
+      titleElement.textContent = 'ALL LISTINGS';
+    }
+  }
+</script>
+
+</body>
+
+</html>

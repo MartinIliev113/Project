@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{fragments/head}">
+</head>
+
+<body>
+
+<div>
+    <nav th:replace="~{fragments/navbar}"></nav>
+</div>
+
+<div class="container mt-4 text-center">
+    <h1> Error: <span th:text="${error_code}">404</span> <span th:text="${message}">Object</span></h1>
+</div>
+</body>
+</html>
