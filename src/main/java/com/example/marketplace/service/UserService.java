@@ -252,4 +252,18 @@ public class UserService {
     private GrantedAuthority mapRole(UserRoleEntity userRoleEntity) {
         return new SimpleGrantedAuthority("ROLE_" + userRoleEntity.getRole().name());
     }
+
+    public boolean isAdmin(String username) {
+        List<UserRoleEntity> roles = userRepository.findByUsername(username).orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND))
+                .getRoles();
+        UserRoleEntity role = roleRepository.findByRole(UserRoleEnum.ADMIN);
+        return roles.contains(role);
+    }
+
+    public boolean isModerator(String username) {
+        List<UserRoleEntity> roles = userRepository.findByUsername(username).orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND))
+                .getRoles();
+        UserRoleEntity role = roleRepository.findByRole(UserRoleEnum.MODERATOR);
+        return roles.contains(role);
+    }
 }

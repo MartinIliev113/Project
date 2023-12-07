@@ -25,6 +25,12 @@ public class CommentController {
 
         return "redirect:/products/details/" + commentDTO.getProductId();
     }
+    @DeleteMapping("/{productId}/{id}")
+    public String deleteComment(@PathVariable Long productId,@PathVariable Long id){
+        commentService.delete(id);
+
+        return "redirect:/products/details/"+productId;
+    }
 
 //    @DeleteMapping("/{id}/{routeId}")
 //    public String delete(@PathVariable("id") Long id, @PathVariable("routeId") Long routeId) {

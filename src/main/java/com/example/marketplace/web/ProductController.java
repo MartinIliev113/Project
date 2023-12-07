@@ -31,10 +31,12 @@ import java.util.List;
 public class ProductController {
     private final CategoryService categoryService;
     private final ProductService productService;
+    private final UserService userService;
 
-    public ProductController(CategoryService categoryService, ProductService productService, UserService userService) {
+    public ProductController(CategoryService categoryService, ProductService productService, UserService userService, UserService userService1) {
         this.categoryService = categoryService;
         this.productService = productService;
+        this.userService = userService1;
     }
 
     @ModelAttribute("productDTO")
@@ -107,6 +109,11 @@ public class ProductController {
     @GetMapping("details/{id}")
     public String productDetails(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails viewer) {
         model.addAttribute("productDTO", productService.getProductById(id, viewer));
+        model.addAttribute("viewerUsername", viewer.getUsername());
+        model.addAttribute("isAdmin",userService.isAdmin(viewer.getUsername()));
+        model.addAttribute("isModerator",userService.isModerator(viewer.getUsername()));
+        viewer.getAuthorities();
+
 
         return "product-details";
     }
