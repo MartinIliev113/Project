@@ -51,8 +51,9 @@ public class TestDataUtil {
     }
 
     public void cleanUp() {
+        productRepository.deleteAll();
         categoryRepository.deleteAll();
         subCategoryRepository.deleteAll();
-        productRepository.deleteAll();
+
     }
 }
