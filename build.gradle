@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	testImplementation 'org.hsqldb:hsqldb'
 	testImplementation 'com.icegreen:greenmail:2.0.0'
+	implementation group: 'com.cloudinary', name: 'cloudinary-core', version: '1.36.0'
 }
 
 test {
