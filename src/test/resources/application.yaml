@@ -1,23 +1,23 @@
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: never
-  mvc:
-    hiddenmethod:
-      filter:
-        enabled: true
-marketplace:
-    remember.me.key: ${REMEMBER_ME_KEY:topsecret}
-mail:
-  project: "project@example.com"
-  host: localhost
-  port: 3333
-  username: ${MAIL_USER:user}
-  password:  ${MAIL_PASS:pass}
-app:
-  default:
-    password: pass
+#spring:
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    defer-datasource-initialization: true
+#  sql:
+#    init:
+#      mode: never
+#  mvc:
+#    hiddenmethod:
+#      filter:
+#        enabled: true
+#marketplace:
+#    remember.me.key: ${REMEMBER_ME_KEY:topsecret}
+#mail:
+#  project: "project@example.com"
+#  host: localhost
+#  port: 3333
+#  username: ${MAIL_USER:user}
+#  password:  ${MAIL_PASS:pass}
+#app:
+#  default:
+#    password: pass

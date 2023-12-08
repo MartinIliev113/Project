@@ -16,13 +16,16 @@
                 <div class="carousel-inner">
                     <div th:classappend="'carousel-item active'">
                         <div class="d-flex justify-content-center align-items-center">
-                            <img th:src="@{'/images/' + ${productDTO.primaryImageUrl}}" class="d-block w-100" style="max-height: 380px;" alt="Primary Image">
+<!--                            <img th:src="@{'/images/' + ${productDTO.primaryImageUrl}}" class="d-block w-100" style="max-height: 380px;" alt="Primary Image">-->
+                            <img th:src="@{${productDTO.primaryImageUrl}}" class="d-block w-100" style="max-height: 380px;" alt="Primary Image">
                         </div>
                     </div>
 
                     <div th:each="image : ${productDTO.imageUrls}" th:classappend="'carousel-item'">
                         <div class="d-flex justify-content-center align-items-center">
-                            <img th:src="@{'/images/' + ${image}}" class="d-block w-100" style="max-height: 380px;" alt="Product Image">
+<!--                            <img th:src="@{'/images/' + ${image}}" class="d-block w-100" style="max-height: 380px;" alt="Product Image">-->
+<!--                            <img th:src="@{${image}}" class="d-block w-100" style="max-height: 380px;" alt="Product Image">-->
+                            <img th:src="@{${image}}" class="d-block w-100" style="max-height: 380px;" alt="Product Image">
                         </div>
                     </div>
                 </div>
@@ -49,7 +52,7 @@
             </div>
         </div>
         <div class="card-body" th:if="${productDTO.viewerIsOwner}">
-            <form th:method="delete" th:action="@{/products/{id}(id=${productDTO.getId()})}">
+            <form th:method="DELETE" th:action="@{/products/{id}(id=${productDTO.getId()})}">
                 <input type="submit" value="Delete product" class="link card-link btn btn-danger"/>
             </form>
         </div>

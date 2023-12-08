@@ -32,7 +32,7 @@ function fetchProducts(page) {
                 card.style.marginBottom = '5rem';
 
                 const cardImage = document.createElement('img');
-                product.primaryImageUrl = "/images/" + product.primaryImageUrl;
+                // product.primaryImageUrl =   product.primaryImageUrl;
                 cardImage.src = product.primaryImageUrl;
                 cardImage.className = 'card-img-top';
                 cardImage.alt = 'Product Image';

@@ -1,6 +1,8 @@
 package com.example.marketplace.service;
 
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.marketplace.model.AppUserDetails;
 import com.example.marketplace.model.dtos.ProductDTO;
 import com.example.marketplace.model.dtos.SearchProductDTO;
@@ -9,6 +11,7 @@ import com.example.marketplace.model.enums.UserRoleEnum;
 import com.example.marketplace.model.exceptions.ObjectNotFoundException;
 import com.example.marketplace.repository.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,43 +39,45 @@ public class ProductService {
     private final ModelMapper modelMapper;
     private final SubCategoryRepository subCategoryRepository;
     private final CommentService commentService;
+    private final Cloudinary cloudinary;
 
-
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper, SubCategoryRepository subCategoryRepository, CommentService commentService) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper, SubCategoryRepository subCategoryRepository, CommentService commentService,
+                          @Value("${cloudinary.cloud-name}") String cloudName,
+                          @Value("${cloudinary.api-key}") String apiKey,
+                          @Value("${cloudinary.api-secret}") String apiSecret) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.subCategoryRepository = subCategoryRepository;
         this.commentService = commentService;
+        this.cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", cloudName,
+                "api_key", apiKey,
+                "api_secret", apiSecret
+        ));
     }
-
     public void addProduct(ProductDTO productDTO, AppUserDetails userDetails) {
         ProductEntity product = modelMapper.map(productDTO, ProductEntity.class);
-        SubCategoryEntity subCategory = subCategoryRepository.findByName(productDTO.getSubCategory()).orElseThrow(()->new ObjectNotFoundException(CATEGORY_NOT_FOUND));
+        SubCategoryEntity subCategory = subCategoryRepository.findByName(productDTO.getSubCategory())
+                .orElseThrow(() -> new ObjectNotFoundException(CATEGORY_NOT_FOUND));
         CategoryEntity category = categoryRepository.findBySubCategoriesContaining(subCategory);
         product.setCategory(category);
         product.setSubCategory(subCategory);
-        product.setOwner(userRepository.findById(userDetails.getId()).orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND)));
+        product.setOwner(userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND)));
         category.getProducts().add(product);
         subCategory.getProducts().add(product);
         product.setAddedOn(LocalDateTime.now());
 
-        String primaryFilePath = getFilePath(userDetails.getUsername(), product.getTitle(), productDTO.getPrimaryImage());
-        boolean isPrimaryUploaded = uploadImage(productDTO.getPrimaryImage(), primaryFilePath);
+        // Upload primary image to Cloudinary with a structured public_id
+        MultipartFile primaryImage = productDTO.getPrimaryImage();
+        String primaryImageUrl = uploadImageToCloudinary(primaryImage, userDetails.getUsername(), productDTO.getTitle());
+        product.setPrimaryImageUrl(primaryImageUrl);
 
-        if (isPrimaryUploaded) {
-            product.setPrimaryImageUrl(primaryFilePath);
-        }
-
-
+        // Upload additional images to Cloudinary with a structured public_id
         List<String> imageUrls = productDTO.getImages().stream()
-                .map(image -> {
-                    String filePath = getFilePath(userDetails.getUsername(), product.getTitle(), image);
-                    boolean isUploaded = uploadImage(image, filePath);
-                    return isUploaded ? filePath : null;
-                })
-                .filter(url -> url != null)
+                .map(image -> uploadImageToCloudinary(image, userDetails.getUsername(), productDTO.getTitle()))
                 .collect(Collectors.toList());
 
         product.setImageUrls(imageUrls);
@@ -80,26 +85,75 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    private boolean uploadImage(MultipartFile image, String filePath) {
-        try {
-            File newFile = new File(BASE_IMAGES_PATH + filePath);
-            newFile.getParentFile().mkdirs();
-            if (newFile.createNewFile()) {
-                try (OutputStream outputStream = new FileOutputStream(newFile)) {
-                    outputStream.write(image.getBytes());
-                    return true;
-                } catch (IOException e) {
-                    System.out.println("Error writing file: " + e.getMessage());
-                }
-            } else {
-                System.out.println("File already exists");
-            }
-        } catch (IOException e) {
-            System.out.println("Error creating file: " + e.getMessage());
-        }
 
-        return false;
+    private String uploadImageToCloudinary(MultipartFile image, String username, String productTitle) {
+        try {
+            String folder = String.format("%s/%s", username, transformProductTitle(productTitle));
+
+            // Use Cloudinary uploader to upload the image with a structured public_id
+            Map uploadResult = cloudinary.uploader().upload(image.getBytes(),
+                    ObjectUtils.asMap("public_id", folder + "/" + UUID.randomUUID()));
+            return (String) uploadResult.get("url");
+        } catch (IOException e) {
+            // Handle exception appropriately (e.g., log the error)
+            throw new RuntimeException("Error uploading image to Cloudinary: " + e.getMessage(), e);
+        }
     }
+
+
+//    public void addProduct(ProductDTO productDTO, AppUserDetails userDetails) {
+//        ProductEntity product = modelMapper.map(productDTO, ProductEntity.class);
+//        SubCategoryEntity subCategory = subCategoryRepository.findByName(productDTO.getSubCategory()).orElseThrow(()->new ObjectNotFoundException(CATEGORY_NOT_FOUND));
+//        CategoryEntity category = categoryRepository.findBySubCategoriesContaining(subCategory);
+//        product.setCategory(category);
+//        product.setSubCategory(subCategory);
+//        product.setOwner(userRepository.findById(userDetails.getId()).orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND)));
+//        category.getProducts().add(product);
+//        subCategory.getProducts().add(product);
+//        product.setAddedOn(LocalDateTime.now());
+//
+//        String primaryFilePath = getFilePath(userDetails.getUsername(), product.getTitle(), productDTO.getPrimaryImage());
+//        boolean isPrimaryUploaded = uploadImage(productDTO.getPrimaryImage(), primaryFilePath);
+//
+//        if (isPrimaryUploaded) {
+//            product.setPrimaryImageUrl(primaryFilePath);
+//        }
+//
+//
+//        List<String> imageUrls = productDTO.getImages().stream()
+//                .map(image -> {
+//                    String filePath = getFilePath(userDetails.getUsername(), product.getTitle(), image);
+//                    boolean isUploaded = uploadImage(image, filePath);
+//                    return isUploaded ? filePath : null;
+//                })
+//                .filter(url -> url != null)
+//                .collect(Collectors.toList());
+//
+//        product.setImageUrls(imageUrls);
+//
+//        productRepository.save(product);
+//    }
+//
+//    private boolean uploadImage(MultipartFile image, String filePath) {
+//        try {
+//            File newFile = new File(BASE_IMAGES_PATH + filePath);
+//            newFile.getParentFile().mkdirs();
+//            if (newFile.createNewFile()) {
+//                try (OutputStream outputStream = new FileOutputStream(newFile)) {
+//                    outputStream.write(image.getBytes());
+//                    return true;
+//                } catch (IOException e) {
+//                    System.out.println("Error writing file: " + e.getMessage());
+//                }
+//            } else {
+//                System.out.println("File already exists");
+//            }
+//        } catch (IOException e) {
+//            System.out.println("Error creating file: " + e.getMessage());
+//        }
+//
+//        return false;
+//    }
 
 
 //    public List<ProductDTO> getAllProducts() {
