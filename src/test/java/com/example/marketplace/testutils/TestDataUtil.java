@@ -1,83 +1,58 @@
-package com.example.marketplace.testutils;//package com.example.marketplace.testutils;
-//
-//
-//import com.example.marketplace.model.entity.*;
-//import com.example.marketplace.model.enums.UserRoleEnum;
-//import com.example.marketplace.repository.*;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Component;
-//
-//import java.math.BigDecimal;
-//import java.time.LocalDateTime;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.mockito.Mockito.when;
-//
-//@Component
-//public class TestDataUtil {
-//    @Autowired
-//    private ProductRepository productRepository;
-//    @Autowired
-//    private CategoryRepository categoryRepository;
-//    @Autowired
-//    private SubCategoryRepository subCategoryRepository;
-//    @Autowired
-//    private UserRepository userRepository;
-//    @Autowired
-//    private RoleRepository roleRepository;
-//
-//    public ProductEntity createTestProduct(UserEntity owner){
-//        SubCategoryEntity subCategory=subCategoryRepository.save(
-//                new SubCategoryEntity().setName("Test subcategory")
-//        );
-//        CategoryEntity category=categoryRepository.save(
-//                new CategoryEntity().setName("Test category")
-//        );
-//        category.getSubCategories().add(subCategory);
-//
-//        ProductEntity product=new ProductEntity()
-//                .setCategory(category)
-//                .setSubCategory(subCategory)
-//                .setOwner(owner)
-//                .setAddedOn(LocalDateTime.now())
-//                .setDescription("test description")
-//                .setTitle("test title")
-//                .setPrice(BigDecimal.ONE);
-//
-//        return productRepository.save(product);
-//    }
+package com.example.marketplace.testutils;
 
-//    public void cleanUp(){
-//        productRepository.deleteAll();
-//        categoryRepository.deleteAll();;
-//        subCategoryRepository.deleteAll();
-//    }
-//    public UserEntity createTestAdmin() {
-//        UserEntity userEntity = new UserEntity().setFirstName("firstName").setLastName("lastName")
-//                .setEmail("test@qbvb.bg").setUsername("test").setActive(true)
-//                .setRoles(List.of(new UserRoleEntity().setRole(UserRoleEnum.ADMIN),
-//                        new UserRoleEntity().setRole(UserRoleEnum.MODERATOR)))
-//                .setPassword("123456");
-//
-//        roleRepository.saveAll(userEntity.getRoles());
-//        userRepository.save(userEntity);
-//
-//
-//        return userEntity;
-//    }
-//    public static UserEntity createTestModerator() {
-//        return new UserEntity().setFirstName("firstName").setLastName("lastName")
-//                .setEmail("test@qbvb.bg").setUsername("moderator").setActive(true)
-//                .setRoles(List.of(new UserRoleEntity().setRole(UserRoleEnum.ADMIN),
-//                        new UserRoleEntity().setRole(UserRoleEnum.MODERATOR)))
-//                .setPassword("123456");
-//    }
-//    public UserEntity createTestUser() {
-//        UserEntity userEntity = new UserEntity().setFirstName("firstName").setLastName("lastName")
-//                .setEmail("test@qbvb.bg").setUsername("user").setActive(true)
-//                .setPassword("123456");
-//        userRepository.save(userEntity);
-//        return userEntity;
-//    }
-//}
+
+import com.example.marketplace.model.entity.CategoryEntity;
+import com.example.marketplace.model.entity.ProductEntity;
+import com.example.marketplace.model.entity.SubCategoryEntity;
+import com.example.marketplace.model.entity.UserEntity;
+import com.example.marketplace.repository.CategoryRepository;
+import com.example.marketplace.repository.ProductRepository;
+import com.example.marketplace.repository.SubCategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Component
+public class TestDataUtil {
+
+
+
+    @Autowired
+    private ProductRepository productRepository;
+
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private SubCategoryRepository subCategoryRepository;
+
+
+
+    public ProductEntity createTestProduct(UserEntity owner) {
+
+        CategoryEntity categoryEntity = categoryRepository.save(new CategoryEntity()
+                .setName("Test Category")
+                );
+        SubCategoryEntity subCategoryEntity = subCategoryRepository.save(new SubCategoryEntity()
+                .setName("Test Category"));
+
+        ProductEntity product = new ProductEntity()
+                .setAddedOn(LocalDateTime.now())
+                .setCategory(categoryEntity)
+                .setSubCategory(subCategoryEntity)
+                .setDescription("test description")
+                .setPrice(BigDecimal.valueOf(123))
+                .setOwner(owner);
+
+        return productRepository.save(product);
+    }
+
+    public void cleanUp() {
+        categoryRepository.deleteAll();
+        subCategoryRepository.deleteAll();
+        productRepository.deleteAll();
+    }
+}
