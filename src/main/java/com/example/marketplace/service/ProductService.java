@@ -11,17 +11,13 @@ import com.example.marketplace.model.enums.UserRoleEnum;
 import com.example.marketplace.model.exceptions.ObjectNotFoundException;
 import com.example.marketplace.repository.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,21 +37,14 @@ public class ProductService {
     private final CommentService commentService;
     private final Cloudinary cloudinary;
 
-    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper, SubCategoryRepository subCategoryRepository, CommentService commentService,
-                          @Value("${cloudinary.cloud-name}") String cloudName,
-                          @Value("${cloudinary.api-key}") String apiKey,
-                          @Value("${cloudinary.api-secret}") String apiSecret) {
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, UserRepository userRepository, ModelMapper modelMapper, SubCategoryRepository subCategoryRepository, CommentService commentService, Cloudinary cloudinary) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.subCategoryRepository = subCategoryRepository;
         this.commentService = commentService;
-        this.cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", cloudName,
-                "api_key", apiKey,
-                "api_secret", apiSecret
-        ));
+        this.cloudinary = cloudinary;
     }
     public void addProduct(ProductDTO productDTO, AppUserDetails userDetails) {
         ProductEntity product = modelMapper.map(productDTO, ProductEntity.class);
@@ -247,8 +236,10 @@ public class ProductService {
 
 
     public void removeProduct(Long id) {
-
         ProductEntity productEntity = productRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException(PRODUCT_NOT_FOUND));
+
+        deleteImageFromCloudinary(productEntity.getPrimaryImageUrl());
+        productEntity.getImageUrls().forEach(this::deleteImageFromCloudinary);
 
         SubCategoryEntity subCategory = productEntity.getSubCategory();
         subCategory.getProducts().remove(productEntity);
@@ -266,6 +257,22 @@ public class ProductService {
 
         productRepository.delete(productEntity);
     }
+
+    private void deleteImageFromCloudinary(String imageUrl) {
+        if (imageUrl != null) {
+            try {
+                // Parse Cloudinary URL to extract public_id
+                String publicId = String.valueOf(cloudinary.url().publicId(imageUrl));
+
+                // Delete the resource from Cloudinary
+                cloudinary.api().deleteResources(Arrays.asList(publicId), ObjectUtils.emptyMap());
+            } catch (Exception e) {
+                throw new RuntimeException("Error deleting image from Cloudinary: " + e.getMessage(), e);
+            }
+        }
+    }
+
+
 
 
     public boolean isLoggedUser(String username, String loggedUserUsername) {

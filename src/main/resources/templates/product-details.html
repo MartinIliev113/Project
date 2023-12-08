@@ -52,9 +52,11 @@
             </div>
         </div>
         <div class="card-body" th:if="${productDTO.viewerIsOwner}">
-            <form th:method="DELETE" th:action="@{/products/{id}(id=${productDTO.getId()})}">
+            <form th:method="POST" th:action="@{/products/{id}(id=${productDTO.getId()})}" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                <input type="hidden" name="_method" value="DELETE"/>
                 <input type="submit" value="Delete product" class="link card-link btn btn-danger"/>
             </form>
+
         </div>
     </div>
 
@@ -69,7 +71,7 @@
                     </div>
 
                     <div class="col-3" th:if="${comment.getAuthorUsername() == viewerUsername or isAdmin==true or isModerator==true}">
-                        <form th:method="delete" th:action="@{/comments/{productId}/{id}(productId=${productDTO.getId()},id=${comment.id})}">
+                        <form th:method="delete" th:action="@{/comments/{productId}/{id}(productId=${productDTO.getId()},id=${comment.id})}" onsubmit="return confirm('Are you sure you want to delete this comment?');">>
                             <input type="submit" value="Delete comment" class="link card-link btn btn-danger"/>
                         </form>
                     </div>
