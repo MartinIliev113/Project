@@ -43,7 +43,7 @@ public class SubCategoriesController {
         return new SubCategoryDto();
     }
 
-    @GetMapping() //TODO
+    @GetMapping()
     public String subcategoriesPage(@PathVariable Long id) {
         subcategories(id);
         return "subcategories";

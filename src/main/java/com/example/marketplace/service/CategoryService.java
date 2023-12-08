@@ -54,7 +54,7 @@ public class CategoryService {
     public List<SubCategoryDto> getSubCategories(Long id) {
         Optional<CategoryEntity> category = categoryRepository.findById(id);
         return category.map(categoryEntity -> categoryEntity.getSubCategories()
-                .stream().map(subcategory -> modelMapper.map(subcategory, SubCategoryDto.class)).toList()).orElse(null); //todo exception
+                .stream().map(subcategory -> modelMapper.map(subcategory, SubCategoryDto.class)).toList()).orElse(null);
     }
 
     public String getCategoryName(Long id) {

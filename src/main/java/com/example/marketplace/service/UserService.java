@@ -102,17 +102,17 @@ public class UserService {
 
     public UserDTO findByUsername(String username) {
 
-//        return modelMapper.map(userRepository.findByUsername(username)
-//                        .orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND)),
-//                UserDTO.class);
+        return modelMapper.map(userRepository.findByUsername(username)
+                        .orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND)),
+                UserDTO.class);
 
-        UserDTO userDTO;
-        if (userRepository.findByUsername(username).isPresent()) {
-            userDTO = modelMapper.map(userRepository.findByUsername(username), UserDTO.class);
-        } else {
-            throw new ObjectNotFoundException(USER_NOT_FOUND);
-        }
-        return userDTO;
+//        UserDTO userDTO;
+//        if (userRepository.findByUsername(username).isPresent()) {
+//            userDTO = modelMapper.map(userRepository.findByUsername(username), UserDTO.class);
+//        } else {
+//            throw new ObjectNotFoundException(USER_NOT_FOUND);
+//        }
+//        return userDTO;
     }
 
     public void changePassword(String username, String password) {

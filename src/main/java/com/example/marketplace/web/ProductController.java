@@ -109,12 +109,11 @@ public class ProductController {
     @GetMapping("details/{id}")
     public String productDetails(@PathVariable Long id, Model model, @AuthenticationPrincipal UserDetails viewer) {
         model.addAttribute("productDTO", productService.getProductById(id, viewer));
-        model.addAttribute("viewerUsername", viewer.getUsername());
-        model.addAttribute("isAdmin",userService.isAdmin(viewer.getUsername()));
-        model.addAttribute("isModerator",userService.isModerator(viewer.getUsername()));
-        viewer.getAuthorities();
-
-
+        if(viewer!=null) {
+            model.addAttribute("viewerUsername", viewer.getUsername());
+            model.addAttribute("isAdmin", userService.isAdmin(viewer.getUsername()));
+            model.addAttribute("isModerator", userService.isModerator(viewer.getUsername()));
+        }
         return "product-details";
     }
 

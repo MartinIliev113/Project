@@ -33,7 +33,7 @@ public class ApplicationUserDetailsService implements UserDetailsService {
         }
 
         if (!user.get().isActive()) {
-            throw new DisabledException("User is not active");  //TODO
+            throw new DisabledException("User is not active");
         }
 
         return map(user.get());

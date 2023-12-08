@@ -30,7 +30,6 @@ public class CommentService {
         this.productRepository = productRepository;
     }
 
-    //todo
     public void create(CommentDTO commentDTO, AppUserDetails userDetails) {
         CommentEntity comment = modelMapper.map(commentDTO, CommentEntity.class);
         comment.setId(null);

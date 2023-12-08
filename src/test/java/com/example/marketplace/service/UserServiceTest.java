@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
+    //ALL WORKING
 
     private UserService serviceToTest;
 
@@ -47,6 +49,8 @@ public class UserServiceTest {
     private ApplicationEventPublisher applicationEventPublisher;
     @Mock
     private UserActivationCodeRepository userActivationCodeRepository;
+    @Mock
+    private UserDetailsService userDetailsService;
 
     @BeforeEach
     void setUp() {

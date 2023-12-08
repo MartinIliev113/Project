@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="~{fragments/head}">
-
 </head>
 
 <body>
@@ -51,7 +50,7 @@
         </div>
         <div class="card-body" th:if="${productDTO.viewerIsOwner}">
             <form th:method="delete" th:action="@{/products/{id}(id=${productDTO.getId()})}">
-                <input type="submit" value="Delete product" class="link card-link"/>
+                <input type="submit" value="Delete product" class="link card-link btn btn-danger"/>
             </form>
         </div>
     </div>
@@ -60,13 +59,17 @@
         <h1>Comments</h1>
         <div th:unless="${#lists.size(productDTO.comments) == 0}" class="comments">
             <div class="form-group" th:each="comment : ${productDTO.comments}">
-                <h4 th:text="${comment.textContent}">Leave a comment</h4>
-                <label th:text="|${comment.getAuthorUsername()} ${#temporals.format(comment.created, 'HH:mm dd/MM/yyyy')}|">Message</label>
+                <div class="row">
+                    <div class="col-9">
+                        <h4 th:text="${comment.textContent}">Leave a comment</h4>
+                        <label th:text="|${comment.getAuthorUsername()} ${#temporals.format(comment.created, 'HH:mm dd/MM/yyyy')}|">Message</label>
+                    </div>
 
-                <div class="card-body" th:if="${comment.getAuthorUsername() == viewerUsername or isAdmin==true or isModerator==true}">
-                    <form th:method="delete" th:action="@{/comments/{productId}/{id}(productId=${productDTO.getId()},id=${comment.id})}">
-                        <input type="submit" value="Delete comment" class="link card-link"/>
-                    </form>
+                    <div class="col-3" th:if="${comment.getAuthorUsername() == viewerUsername or isAdmin==true or isModerator==true}">
+                        <form th:method="delete" th:action="@{/comments/{productId}/{id}(productId=${productDTO.getId()},id=${comment.id})}">
+                            <input type="submit" value="Delete comment" class="link card-link btn btn-danger"/>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,7 +89,6 @@
                     <input type="submit" class="btn btn-primary" id="postComment" value="Post Comment"/>
                 </div>
             </form>
-            <!-- Comments submission -->
         </div>
         <div th:unless="${#authorization.expression('isAuthenticated')}">
             <p>Please <a th:href="@{/login}">log in</a> to post a comment.</p>

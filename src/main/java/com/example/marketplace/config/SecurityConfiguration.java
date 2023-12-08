@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                                         .permitAll().
                                         requestMatchers("/", "/users/login", "/users/register", "/users/login-error", "/pages/all/", "/products/all",
                                                 "products", "products/search", "/user/activate/**", "/users/forgot-password/**", "/user/change-pass/**"
-                                                , "/products/details/**")
+                                                , "/products/details/**","products/**")
                                         .permitAll().
                                         requestMatchers("/categories/all").hasRole(UserRoleEnum.MODERATOR.name()).
                                         requestMatchers("/admin").hasRole(UserRoleEnum.ADMIN.name()).
