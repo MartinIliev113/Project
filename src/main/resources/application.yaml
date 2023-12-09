@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    active: default
+
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/test?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
@@ -42,7 +45,7 @@ app:
     password: pass
 
 mail:
-  project: "project@example.com"
+  project: "marketplace@example.com"
   host: localhost
   port: 1025
   username: ${MAIL_USER:user}

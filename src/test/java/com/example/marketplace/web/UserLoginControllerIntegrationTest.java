@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 
 @AutoConfigureMockMvc
 @Transactional
@@ -42,8 +44,8 @@ public class UserLoginControllerIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/users/login-error")
                         .param(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY, username)
-                        .param(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY, username))
-                .andDo(MockMvcResultHandlers.print())  // Add this line to print the response
+                        .param(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY, username)
+                        .with(csrf()))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/users/login"))
                 .andExpect(MockMvcResultMatchers.flash().attribute("bad_credentials", true))

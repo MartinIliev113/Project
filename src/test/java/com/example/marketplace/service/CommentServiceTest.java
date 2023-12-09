@@ -53,8 +53,6 @@ public class CommentServiceTest {
 
     @Test
     public void testCreate() {
-
-        // Mock data
         CommentDTO commentDTO = new CommentDTO();
         AppUserDetails userDetails = new AppUserDetails("username", "password",authorities);
 

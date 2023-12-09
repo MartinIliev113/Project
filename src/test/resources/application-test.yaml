@@ -1,7 +1,11 @@
+
 spring:
+  profiles:
+    active: test
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     defer-datasource-initialization: true
   sql:
     init:
@@ -10,10 +14,8 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
-marketplace:
-    remember.me.key: ${REMEMBER_ME_KEY:topsecret}
 mail:
-  project: "project@example.com"
+  project: "marketplace@example.com"
   host: localhost
   port: 3333
   username: ${MAIL_USER:user}
@@ -21,15 +23,3 @@ mail:
 app:
   default:
     password: pass
-  cloudinary:
-    cloud-name: dowdh8mbc
-    api-key: 697186739998891
-    api-secret: wONlWV5n5E3DvvZG05beJHu71ic
-    security:
-      oauth2:
-        client:
-          registration:
-            github:
-              client-id: ${GITHUB_CLIENT:913103db4644c9da634b}
-              client-secret: ${GITHUB_SECRET:c6d075265346833c05acc276df4b4c95a91b22df}
-              scope: user:email

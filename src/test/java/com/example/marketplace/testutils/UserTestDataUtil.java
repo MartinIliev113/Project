@@ -2,8 +2,7 @@ package com.example.marketplace.testutils;
 
 import com.example.marketplace.model.entity.UserEntity;
 import com.example.marketplace.model.enums.UserRoleEnum;
-import com.example.marketplace.repository.UserRepository;
-import com.example.marketplace.repository.UserRoleRepository;
+import com.example.marketplace.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +14,12 @@ public class UserTestDataUtil {
     private UserRepository userRepository;
     @Autowired
     private UserRoleRepository userRoleRepository;
+    @Autowired
+    private UserActivationCodeRepository userActivationCodeRepository;
+    @Autowired
+    private UserForgotPasswordCodeRepository userForgotPasswordCodeRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
 
     public UserEntity createUser(String username) {
@@ -44,6 +49,9 @@ public class UserTestDataUtil {
     }
 
     public void cleanUp() {
+        commentRepository.deleteAll();
+        userActivationCodeRepository.deleteAll();
+        userForgotPasswordCodeRepository.deleteAll();
         userRepository.deleteAll();
     }
 

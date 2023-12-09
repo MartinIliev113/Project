@@ -226,6 +226,7 @@ public class ProductService {
                 viewerEntity.getId());
     }
 
+
     private boolean isAdmin(UserEntity userEntity) {
         return userEntity
                 .getRoles()

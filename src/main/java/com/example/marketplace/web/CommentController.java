@@ -4,7 +4,9 @@ package com.example.marketplace.web;
 import com.example.marketplace.model.AppUserDetails;
 import com.example.marketplace.model.dtos.CommentDTO;
 import com.example.marketplace.service.CommentService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,16 +28,10 @@ public class CommentController {
         return "redirect:/products/details/" + commentDTO.getProductId();
     }
     @DeleteMapping("/{productId}/{id}")
-    public String deleteComment(@PathVariable Long productId,@PathVariable Long id){
+    @PreAuthorize("@commentService.isAuthor(#id, #userDetails.username)")
+    public String deleteComment(@PathVariable Long productId,@PathVariable Long id,@AuthenticationPrincipal UserDetails userDetails){
         commentService.delete(id);
 
         return "redirect:/products/details/"+productId;
     }
-
-//    @DeleteMapping("/{id}/{routeId}")
-//    public String delete(@PathVariable("id") Long id, @PathVariable("routeId") Long routeId) {
-//        commentService.delete(id);
-//
-//        return "redirect:/products/details/" + routeId;
-//    }
 }
