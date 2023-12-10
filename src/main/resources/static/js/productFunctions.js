@@ -50,9 +50,15 @@ function fetchProducts(page) {
                 cardText.className = 'card-text';
                 cardText.textContent = product.description;
 
+
                 cardText.style.maxHeight = '150px';
                 cardText.style.overflow = 'hidden';
                 cardText.style.textOverflow = 'ellipsis';
+
+
+                const cardPrice = document.createElement('p');
+                cardPrice.className = 'card-price';
+                cardPrice.textContent = 'Price: $' + product.price.toFixed(2);
 
                 const button = document.createElement('a');
                 button.href = '/products/details/' + product.id;
@@ -62,7 +68,9 @@ function fetchProducts(page) {
                 cardBody.appendChild(cardTitle);
                 cardBody.appendChild(cardImage);
                 cardBody.appendChild(cardText);
+                cardBody.appendChild(cardPrice);
                 cardBody.appendChild(button);
+
 
                 card.appendChild(cardBody);
                 cardColumn.appendChild(card);

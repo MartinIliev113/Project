@@ -212,10 +212,10 @@ public class UserService {
     public void editUser(UserEditDTO editUserDTO, String name) {
         UserEntity user = userRepository.findByUsername(name).orElseThrow(() -> new ObjectNotFoundException(USER_NOT_FOUND));
         if(!editUserDTO.getUsername().equals(user.getUsername()) && isUsernameTaken(editUserDTO.getUsername())){
-            throw new RuntimeException(); //TODO
+            throw new RuntimeException();
         }
         if(!editUserDTO.getEmail().equals(user.getEmail()) && isEmailTaken(editUserDTO.getEmail())){
-            throw new RuntimeException(); //TODO
+            throw new RuntimeException();
         }
         user.setUsername(editUserDTO.getUsername()).setFirstName(editUserDTO.getFirstName()).setLastName(editUserDTO.getLastName()).setEmail(editUserDTO.getEmail());
 
